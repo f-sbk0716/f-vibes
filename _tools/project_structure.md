@@ -1,42 +1,258 @@
-# 対象プロジェクト情報
+# @freee_jp/vibesの情報
 
-## ファイル一覧
+## UIコンポーネント一覧
 
-docs/Colors.stories.mdx
-docs/Contribution.stories.mdx
-docs/Design/Layout/Layout.stories.mdx
-docs/Design/Readme.stories.mdx
-docs/Readme.stories.mdx
-docs/Storybook.stories.mdx
-docs/Stylesheets.stories.mdx
-docs/TypeScript.stories.mdx
-examples/Collection.mdx
-examples/Collection.stories.tsx
-examples/Forms.mdx
-examples/Forms.stories.tsx
-examples/ImportWizard.mdx
-examples/ImportWizard.stories.tsx
-examples/Pages.stories.tsx
-examples/ResponsiveLayout.mdx
-examples/ResponsiveLayout.stories.tsx
-examples/ThroughCommonProps.mdx
-examples/ThroughCommonProps.stories.tsx
-src/lv1/buttons/Button.tsx
-src/lv1/buttons/TextButton.tsx
-src/lv1/forms/CheckBox.tsx
-src/lv1/forms/RadioButton.tsx
-src/lv1/forms/SelectBox.tsx
-src/lv1/forms/TextField.tsx
-src/lv1/layout/HStack.tsx
-src/lv1/layout/Stack.tsx
-src/lv1/layout/VStack.tsx
-src/lv1/typography/Paragraph.tsx
-src/lv1/typography/Text.tsx
-src/lv2/dialogs/MessageDialog.tsx
-src/lv2/formControl/FormControl.tsx
-src/lv2/messageBlock/MessageBlock.tsx
+- AccordionPanel
+- AlertSwallow
+- AmountRangeField
+- ApiComboBox
+- ApiMultiComboBox
+- AppStoreBadge
+- Avatar
+- BackwardButton
+- Balloon
+- BasicTable
+- BorderTableListCell
+- Breadcrumbs
+- BulletedList
+- Button
+- ButtonGroup
+- Calendar
+- CalendarDate
+- CalendarHead
+- CardBase
+- CardNavigation
+- CheckBox
+- CheckBoxCell
+- CloudSkeletonIllust
+- CloudUploadIllust
+- ColumnBase
+- Container
+- ContentsBase
+- CreateNewItem
+- CsvUploadIllust
+- DateDurationField
+- DateField
+- DateInput
+- DatePicker
+- DecimalInput
+- DescriptionList
+- DescriptionListCell
+- DescriptionListHeadCell
+- DialogBase
+- DialogFooter
+- DigitsInput
+- DiscoveryIllust
+- Dropdown
+- DropdownButton
+- DropdownMenuContent
+- FileDropArea
+- FileUploadIllust
+- FileUploader
+- FilterTag
+- FilterableDropdownButton
+- FinishTaskIllust
+- FloatingBase
+- FloatingMessageBlock
+- FocusHighlight
+- FocusTrap
+- Footer
+- FormActions
+- FormControl
+- FormControlGroup
+- FormControlLabel
+- FormattedTextField
+- FullScreenModal
+- GlobalNavi
+- GlobalNaviButton
+- GooglePlayBadge
+- GridBlock
+- GridWrapper
+- GroupedListTable
+- GuidanceMessage
+- GuideDialog
+- GuideStepCount
+- GuidedContent
+- HStack
+- Header
+- HeaderSectionContent
+- HeadlineArea
+- HierarchicalTable
+- HierarchicalTableRowHeaderCell
+- IconOnlyBackwardButton
+- IconOnlyButton
+- IconOnlyJumpButton
+- ImageUploadIllust
+- IndexSearchField
+- InlineLink
+- InlineSpinner
+- InternalHeadline
+- Item
+- ItemLabel
+- JumpButton
+- LeftIconButton
+- LineSeparatedList
+- ListButton
+- ListButtonSelector
+- ListButtons
+- ListCard
+- ListTable
+- LoadMoreItem
+- Loading
+- MarginBase
+- MaterialIcon
+- Message
+- MessageBlock
+- MessageDialog
+- MessageDialogConfirm
+- MessageIcon
+- MiniTag
+- MultiComboBox
+- MultiComboBoxField
+- NameField
+- NegativeContentsBase
+- NegativeMarginBase
+- NoDataCreated
+- NoDataIllust
+- NoSearchResults
+- NoSearchResultsIllust
+- NotFoundSwallow
+- Note
+- NumeralCodeInput
+- NumeralField
+- NumericTable
+- OptionButton
+- PageSelector
+- PageTitle
+- Pager
+- PagerBreak
+- PagerButton
+- Pagination
+- Paragraph
+- PasswordField
+- PersonTag
+- PhoneNumberField
+- PopupBase
+- PopupProgressBar
+- PopupProgressBarPortal
+- ProgressBar
+- PropsListForm
+- RadioButton
+- ReadOnlyField
+- RequiredIcon
+- RightIconButton
+- ScrimBase
+- ScrimCoveredContent
+- ScrollableBase
+- SearchField
+- SectionTitle
+- SegmentControlButton
+- SelectBox
+- SelectableButton
+- SingleComboBox
+- SkeletonBase
+- SkeletonBlock
+- SkeletonCircle
+- SkeletonDescriptionList
+- SkeletonIcon
+- SkeletonInput
+- SkeletonListTable
+- SkeletonPageTitle
+- SkeletonParagraph
+- SkeletonRectangle
+- SkeletonSectionTitle
+- SkeletonStackedBarChart
+- Stack
+- StackedBarChart
+- StatusIcon
+- StatusSelector
+- StepBlock
+- StepBorder
+- StepNumber
+- Stepper
+- SubSectionTitle
+- SwallowContainer
+- Tab
+- TabBar
+- TabButton
+- TableListCell
+- TableListHead
+- TableListHeadCell
+- TableListRow
+- TagBox
+- TaskDialog
+- Text
+- TextArea
+- TextButton
+- TextField
+- TimeInput
+- TimeLengthInput
+- ToggleButton
+- ToggleDialog
+- TreeFoldingButtonCell
+- VStack
+- VerticalSteps
+- VisuallyHidden
+- Week
+- Weeks
+- WithAccordionContent
+- WithBalloon
+- WithDescriptionContent
+- WithDropdown
+- WithFilterableDropdown
+- WithPopup
+- WithSideContent
+- WithTOC
+- ZebraBase
 
-## ファイルの詳細内容
+## 出力ファイル一覧
+
+- docs/Colors.stories.mdx
+- docs/Contribution.stories.mdx
+- docs/Design/Layout/Layout.stories.mdx
+- docs/Design/Readme.stories.mdx
+- docs/Readme.stories.mdx
+- docs/Storybook.stories.mdx
+- docs/Stylesheets.stories.mdx
+- docs/TypeScript.stories.mdx
+- examples/Collection.mdx
+- examples/Collection.stories.tsx
+- examples/Forms.mdx
+- examples/Forms.stories.tsx
+- examples/ImportWizard.mdx
+- examples/ImportWizard.stories.tsx
+- examples/Pages.stories.tsx
+- examples/ResponsiveLayout.mdx
+- examples/ResponsiveLayout.stories.tsx
+- examples/ThroughCommonProps.mdx
+- examples/ThroughCommonProps.stories.tsx
+- src/constants/Color.ts
+- src/constants/Font.ts
+- src/constants/Size.ts
+- src/constants/ZIndex.ts
+- src/constants/index.ts
+- src/internal/CommonStyle.ts
+- src/lv1/buttons/Button.tsx
+- src/lv1/buttons/TextButton.tsx
+- src/lv1/forms/CheckBox.tsx
+- src/lv1/forms/RadioButton.tsx
+- src/lv1/forms/SelectBox.tsx
+- src/lv1/forms/TextField.tsx
+- src/lv1/layout/HStack.tsx
+- src/lv1/layout/Stack.tsx
+- src/lv1/layout/VStack.tsx
+- src/lv1/typography/Paragraph.tsx
+- src/lv1/typography/Text.tsx
+- src/lv2/dialogs/MessageDialog.tsx
+- src/lv2/formControl/FormControl.tsx
+- src/lv2/messageBlock/MessageBlock.tsx
+- src/utilities/AriaProps.ts
+- src/utilities/VibesContext.ts
+- src/utilities/VibesProvider.tsx
+- src/utilities/commonProps.ts
+- src/utilities/marginClasses.ts
+
+## 出力ファイル詳細
 
 ### docs/Colors.stories.mdx
 ```
@@ -4484,6 +4700,298 @@ export const Sample = () => {
 
 ```
 
+### src/constants/Color.ts
+```
+typescript
+export const VibesBlackColor = '#252525';
+export const VibesBase1Color = '#efede8';
+export const VibesBase2Color = '#e4e0d7';
+export const VibesBase3Color = '#938f86';
+export const VibesColumnColor = '#f9f7f4';
+export const VibesBurntColor = '#6f6b62';
+export const VibesAlertColor = '#c33939';
+export const VibesNoticeColor = '#c67320';
+export const VibesBackgroundColor = '#efede8';
+
+// Corp
+export const VibesPrimaryCorpColor = '#4575b4';
+export const VibesAccentCorpColor = '#749fcb';
+export const VibesLinkCorpColor = '#3d6dac';
+
+// HR
+export const VibesPrimaryHrColor = '#338650';
+export const VibesAccentHrColor = '#71ab85';
+export const VibesLinkHrColor = '#267a43';
+
+// Vibes 2021 Colors
+export const Colors2021P01 = '#ebf3ff';
+export const Colors2021P02 = '#dce8ff';
+export const Colors2021P03 = '#aac8ff';
+export const Colors2021P04 = '#73a5ff';
+export const Colors2021P05 = '#2864f0';
+export const Colors2021P06 = '#3264dc';
+export const Colors2021P07 = '#285ac8';
+export const Colors2021P08 = '#1e46aa';
+export const Colors2021P09 = '#23418c';
+export const Colors2021P10 = '#143278';
+export const Colors2021S01 = '#f7f5f5';
+export const Colors2021S02 = '#f0eded';
+export const Colors2021S03 = '#e9e7e7';
+export const Colors2021S04 = '#e1dcdc';
+export const Colors2021S05 = '#d7d2d2';
+export const Colors2021S06 = '#bebaba';
+export const Colors2021S07 = '#aaa7a7';
+export const Colors2021S08 = '#8c8989';
+export const Colors2021S09 = '#6e6b6b';
+export const Colors2021S10 = '#464343';
+export const Colors2021RE02 = '#fad2d7';
+export const Colors2021RE04 = '#f07882';
+export const Colors2021RE05 = '#dc1e32';
+export const Colors2021RE07 = '#a51428';
+export const Colors2021RE10 = '#6e0f19';
+export const Colors2021OR02 = '#ffe1d2';
+export const Colors2021OR04 = '#ffaa78';
+export const Colors2021OR05 = '#fa6414';
+export const Colors2021OR07 = '#be4b0f';
+export const Colors2021OR10 = '#7d320a';
+export const Colors2021YE02 = '#fff0d2';
+export const Colors2021YE04 = '#ffd278';
+export const Colors2021YE05 = '#ffb91e';
+export const Colors2021YE07 = '#be8c14';
+export const Colors2021YE10 = '#825a0f';
+export const Colors2021YG02 = '#e6f0d2';
+export const Colors2021YG04 = '#b4dc7d';
+export const Colors2021YG05 = '#82c31e';
+export const Colors2021YG07 = '#50961e';
+export const Colors2021YG10 = '#3c5f14';
+export const Colors2021GR02 = '#cdebd7';
+export const Colors2021GR04 = '#64be8c';
+export const Colors2021GR05 = '#00963c';
+export const Colors2021GR07 = '#006e2d';
+export const Colors2021GR10 = '#004b1e';
+export const Colors2021BG02 = '#cdf0f0';
+export const Colors2021BG04 = '#64d2d2';
+export const Colors2021BG05 = '#00b9b9';
+export const Colors2021BG07 = '#008c8c';
+export const Colors2021BG10 = '#146464';
+export const Colors2021PU02 = '#e6d7fa';
+export const Colors2021PU04 = '#b482f0';
+export const Colors2021PU05 = '#733ce6';
+export const Colors2021PU07 = '#5a2daa';
+export const Colors2021PU10 = '#3c1e73';
+export const Colors2021GY01 = '#fbfbfb';
+export const Colors2021GY02 = '#dcdcdc';
+export const Colors2021GY04 = '#a0a0a0';
+export const Colors2021GY05 = '#5a5a5a';
+export const Colors2021GY07 = '#323232';
+export const Colors2021GY10 = '#1e1e1e';
+
+export const Vibes2021BlackColor = Colors2021GY07;
+export const Vibes2021Base1Color = Colors2021S02;
+export const Vibes2021Base2Color = Colors2021S03;
+export const Vibes2021Base3Color = Colors2021S08;
+export const Vibes2021ColumnColor = Colors2021S01;
+export const Vibes2021BurntColor = Colors2021S09;
+export const Vibes2021AlertColor = Colors2021RE05;
+export const Vibes2021NoticeColor = Colors2021YE07;
+export const Vibes2021BackgroundColor = Colors2021P01;
+export const Vibes2021PrimaryCorpColor = Colors2021P05;
+export const Vibes2021AccentCorpColor = Colors2021P04;
+export const Vibes2021LinkCorpColor = Colors2021P07;
+
+```
+
+### src/constants/Font.ts
+```
+typescript
+// type-scale
+// design-token （各コンポーネントの実装に直接使わないでください）
+export const FontSize0625 = '0.625rem'; // 10dp
+export const FontSize0750 = '0.75rem'; // 12dp
+export const FontSize0875 = '0.875rem'; // 14dp
+export const FontSize1000 = '1rem'; // 16dp
+export const FontSize1500 = '1.5rem'; // 24dp
+
+// semantic-token （各componentでfont-sizeを扱うときにはこちらを利用）
+export const SmallestIconFontSize = FontSize0625; // 10dp
+export const CaptionFontSize = FontSize0750; // 12dp
+export const NormalFontSize = FontSize0875; // 14dp
+export const Headline3FontSize = FontSize0875; // 14dp
+export const Headline2FontSize = FontSize1000; // 16dp
+export const Headline1FontSize = FontSize1500; // 24dp
+
+export const MobileHeadline3FontSize = FontSize0875; // 14dp
+export const MobileHeadline2FontSize = FontSize0875; // 14dp
+export const MobileHeadline1FontSize = FontSize1000; // 16dp
+
+export const FontFamily = `'-apple-system', BlinkMacSystemFont, 'Helvetica Neue',
+  'ヒラギノ角ゴ ProN', Hiragino Kaku Gothic ProN, Arial, 'メイリオ', Meiryo,
+  sans-serif`;
+
+export const LineHeight = '1.5';
+
+// 地の文
+export const NormalFont = `normal ${NormalFontSize}/${LineHeight} ${FontFamily}`;
+
+// キャプション（地の文よりも小さめ）
+export const CaptionFont = `normal ${CaptionFontSize}/${LineHeight} ${FontFamily}`;
+
+// フォームのラベルや表の見出し（キャプションと同じ内容だが目的が違うので分けている）
+export const ItemNameFont = `normal ${CaptionFontSize}/${LineHeight} ${FontFamily}`;
+
+// 見出し最大
+export const HeadlineFont1 = `bold ${Headline1FontSize}/${LineHeight} ${FontFamily}`;
+
+// 見出し中間
+export const HeadlineFont2 = `bold ${Headline2FontSize}/${LineHeight} ${FontFamily}`;
+
+// 見出し最小
+export const HeadlineFont3 = `bold ${NormalFontSize}/${LineHeight} ${FontFamily}`;
+
+// 見出し最大 (モバイル)
+export const MobileHeadlineFont1 = `bold ${MobileHeadline1FontSize}/${LineHeight} ${FontFamily}`;
+
+// 見出し中間 (モバイル)
+export const MobileHeadlineFont2 = `bold ${MobileHeadline2FontSize}/${LineHeight} ${FontFamily}`;
+
+// 見出し最小 (モバイル)
+export const MobileHeadlineFont3 = `bold ${MobileHeadline3FontSize}/${LineHeight} ${FontFamily}`;
+
+```
+
+### src/constants/Size.ts
+```
+typescript
+export const MinimumSize = '1px';
+
+export const XSmallSize = '0.25rem'; // 4dp
+export const SmallSize = '0.5rem'; // 8dp
+export const BasicSize = '1rem'; // 16dp
+export const LargeSize = '1.5rem'; // 24dp
+export const XLargeSize = '2rem'; // 32dp
+export const XXLargeSize = '3rem'; // 48dp
+
+export const ContainerSize = '70rem'; // 70dp
+
+export const FormControlHeight = '2.25rem'; //36dp
+export const FormControlSmallHeight = '1.5rem'; // 24dp
+export const FormControlLargeHeight = '3rem'; // 48dp
+
+// モバイルを想定した横幅の閾値(320 ~ 768px)
+export const TabletBoundaryWidth = '64rem';
+export const MobileBoundaryWidth = '48rem';
+// iPhone 8との境界
+export const NarrowMobileBoundaryWidth = `${375 / 16}rem`;
+
+// border-radius-size
+// design-token （各コンポーネントの実装に直接使わないでください）
+export const BorderRadius0250 = '0.25rem'; // 4dp
+export const BorderRadius0500 = '0.5rem'; // 8dp
+export const BorderRadius0750 = '0.75rem'; // 12dp
+export const BorderRadius1000 = '1rem'; // 16dp
+export const BorderRadius1500 = '1.5rem'; // 24dp
+export const BorderRadius9900 = '99rem'; // 円形にするための大きい数字
+
+// semantic-token （各コンポーネントの実装に原則直接使わないでください）
+export const XSmallBorderRadius = BorderRadius0250; // 4dp
+export const SmallBorderRadius = BorderRadius0500; // 8dp
+export const MediumBorderRadius = BorderRadius0750; // 12dp
+export const LargeBorderRadius = BorderRadius1000; // 16dp
+export const XLargeBorderRadius = BorderRadius1500; // 24dp
+export const FullBorderRadius = BorderRadius9900; // この変数のみ単体で利用可能
+
+// alias-token（各componentでborder-radiusを扱うときにはこちらを利用）
+export const BaseBorderRadius = SmallBorderRadius; // Base系コンポーネント
+export const CardBorderRadius = MediumBorderRadius; // Card系コンポーネント
+export const FloatingBorderRadius = LargeBorderRadius; // Floating系コンポーネント
+export const PopupBorderRadius = LargeBorderRadius; // Popup系コンポーネント
+export const DialogBorderRadius = XLargeBorderRadius; // Dialog系コンポーネント
+export const FontBorderRadius = SmallBorderRadius; // テキストを含むコンポーネント
+export const MiniPaddingBorderRadius = XSmallBorderRadius; // テキストを含むコンポーネントの中でもPaddingが小さいコンポーネント
+export const FocusHighlightBorderRadius = XSmallBorderRadius; // フォーカスハイライト系コンポーネント
+
+```
+
+### src/constants/ZIndex.ts
+```
+typescript
+export const OverlayZIndex = '100';
+export const FormActionsZIndex = '200';
+export const FloatingZIndex = '500';
+export const ModalZIndex = '1000';
+export const MessageModalZIndex = '1500';
+export const PopupZIndex = '2000';
+export const PopupMessageZIndex = '3000';
+export const FixedMessageZIndex = '4000';
+export const MaxZIndex = '2147483647';
+
+```
+
+### src/constants/index.ts
+```
+typescript
+export * from './Color';
+export * from './Font';
+export * from './Size';
+export * from './ZIndex';
+
+```
+
+### src/internal/CommonStyle.ts
+```
+typescript
+import styled from 'styled-components';
+import { NormalFont, VibesBlackColor } from '../constants';
+import {
+  MarginSize,
+  FunctionalMarginProps,
+} from '../utilities/functionalMarginClasses';
+import {
+  MarginClassProps,
+  marginClassPropsToFunctionalMarginProps,
+} from '../utilities/marginClasses';
+
+export const marginSizeToValue = (marginSize: MarginSize) =>
+  marginSize === 'auto' ? marginSize : `${marginSize}rem`;
+
+export const CommonStyle = styled.span.attrs(
+  (props: FunctionalMarginProps) => props
+)`
+  font: ${NormalFont};
+  color: ${VibesBlackColor};
+  ${({ ma, mt, mb, ml, mr }) => ({
+    margin: ma
+      ? marginSizeToValue(ma)
+      : mt || mb || ml || mr
+      ? `${mt ? marginSizeToValue(mt) : 0} ${mr ? marginSizeToValue(mr) : 0} ${
+          mb ? marginSizeToValue(mb) : 0
+        } ${ml ? marginSizeToValue(ml) : 0}`
+      : 0,
+  })}
+`;
+
+export const CommonStyleWithDeprecatedMarginProps = styled(CommonStyle).attrs(
+  ({
+    ma,
+    mt,
+    mb,
+    ml,
+    mr,
+    ...props
+  }: FunctionalMarginProps & MarginClassProps) => {
+    const converted = marginClassPropsToFunctionalMarginProps(props);
+    return {
+      ma,
+      mt: mt || converted.mt,
+      mb: mb || converted.mb,
+      mr: mr || converted.mr,
+      ml: ml || converted.ml,
+    };
+  }
+)``;
+
+```
+
 ### src/lv1/buttons/Button.tsx
 ```
 typescript
@@ -6534,6 +7042,442 @@ const MessageBlock: React.FC<Props> = (props: Props) => {
   );
 };
 export default MessageBlock;
+
+```
+
+### src/utilities/AriaProps.ts
+```
+typescript
+/*
+  roleごとに使用できるaria属性を定義しておくことで、WAI-ARIAを扱う上で便利にしたいものの、量が多くてしんどそう。
+  普段使わないものまでここに定義していくのはしんどいので、よく使うもの/必要になったものを定義していっています。
+ */
+
+type AriaExpandedT = boolean;
+type AriaPressedT = boolean | 'mixed';
+type AriaControlsT = string;
+type AriaOwnsT = string;
+type AriaHaspopupT = boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
+type AriaDescribedbyT = string;
+type AriaActivedescendantT = string;
+type AriaAutocompleteT = 'inline' | 'list' | 'both' | 'none';
+type AriaAtomicT = boolean;
+type AriaNumberValueT = number;
+type AriaLevelT = number;
+type AriaSetSizeT = number;
+type AriaPosinsetT = number;
+
+export type ButtonAriaProps = {
+  'aria-expanded'?: AriaExpandedT;
+  'aria-pressed'?: AriaPressedT;
+  'aria-controls'?: AriaControlsT;
+  'aria-owns'?: AriaOwnsT;
+  'aria-haspopup'?: AriaHaspopupT;
+  'aria-describedby'?: AriaDescribedbyT;
+  'aria-atomic'?: AriaAtomicT;
+};
+
+export type LinkAriaProps = {
+  'aria-expanded'?: AriaExpandedT;
+  'aria-controls'?: AriaControlsT;
+  'aria-owns'?: AriaOwnsT;
+  'aria-haspopup'?: AriaHaspopupT;
+  'aria-describedby'?: AriaDescribedbyT;
+  'aria-atomic'?: AriaAtomicT;
+};
+
+export type TextBoxAriaProps = {
+  'aria-expanded'?: AriaExpandedT;
+  'aria-activedescendant'?: AriaActivedescendantT;
+  'aria-controls'?: AriaControlsT;
+  'aria-owns'?: AriaOwnsT;
+  'aria-haspopup'?: AriaHaspopupT;
+  'aria-describedby'?: AriaDescribedbyT;
+  'aria-autocomplete'?: AriaAutocompleteT;
+  'aria-atomic'?: AriaAtomicT;
+};
+
+export type NumberInputAriaProps = {
+  'aria-valuemin'?: AriaNumberValueT;
+  'aria-valuemax'?: AriaNumberValueT;
+  'aria-valuenow'?: AriaNumberValueT;
+};
+
+export type TableRowAriaProps = {
+  'aria-level'?: AriaLevelT;
+  'aria-setsize'?: AriaSetSizeT;
+  'aria-posinset'?: AriaPosinsetT;
+  'aria-expanded'?: AriaExpandedT;
+};
+
+export function filterButtonAriaProps(props: ButtonAriaProps): ButtonAriaProps {
+  return {
+    'aria-expanded': props['aria-expanded'],
+    'aria-pressed': props['aria-pressed'],
+    'aria-controls': props['aria-controls'],
+    'aria-owns': props['aria-owns'],
+    'aria-haspopup': props['aria-haspopup'],
+    'aria-describedby': props['aria-describedby'],
+    'aria-atomic': props['aria-atomic'],
+  };
+}
+
+export function filterLinkAriaProps(props: LinkAriaProps): LinkAriaProps {
+  return {
+    'aria-expanded': props['aria-expanded'],
+    'aria-controls': props['aria-controls'],
+    'aria-owns': props['aria-owns'],
+    'aria-haspopup': props['aria-haspopup'],
+    'aria-describedby': props['aria-describedby'],
+    'aria-atomic': props['aria-atomic'],
+  };
+}
+
+export function filterTextBoxAriaProps(
+  props: TextBoxAriaProps
+): TextBoxAriaProps {
+  return {
+    'aria-expanded': props['aria-expanded'],
+    'aria-activedescendant': props['aria-activedescendant'],
+    'aria-controls': props['aria-controls'],
+    'aria-owns': props['aria-owns'],
+    'aria-haspopup': props['aria-haspopup'],
+    'aria-describedby': props['aria-describedby'],
+    'aria-autocomplete': props['aria-autocomplete'],
+    'aria-atomic': props['aria-atomic'],
+  };
+}
+
+export function filterNumberInputAriaProps(
+  props: NumberInputAriaProps
+): NumberInputAriaProps {
+  return {
+    'aria-valuemin': props['aria-valuemin'],
+    'aria-valuemax': props['aria-valuemax'],
+    'aria-valuenow': props['aria-valuenow'],
+  };
+}
+
+export function filterTableRowAriaProps(
+  props: TableRowAriaProps
+): TableRowAriaProps {
+  return {
+    'aria-expanded': props['aria-expanded'],
+    'aria-setsize': props['aria-setsize'],
+    'aria-posinset': props['aria-posinset'],
+    'aria-level': props['aria-level'],
+  };
+}
+
+```
+
+### src/utilities/VibesContext.ts
+```
+typescript
+import * as React from 'react';
+
+type VibesContextValue = {
+  /**
+   * trueにすると、一部のコンポーネントの表示が画面幅に応じて変化するようになります。
+   */
+  responsive: boolean;
+  /**
+   * ポップアップやダイアログ等のポータルを作成する際の親要素を指定します。
+   * 指定しない場合、document.bodyが親要素となります。
+   */
+  portalParent?: HTMLElement;
+  /**
+   * portalParentをrefで指定する場合に使用します。
+   */
+  portalParentRef?: React.RefObject<HTMLElement>;
+  /**
+   * 言語を指定します。
+   * 対応コンポーネントに埋め込まれたテキストが指定した言語で表示されます。
+   * デフォルトは 'ja' です。
+   */
+  lang?: 'ja' | 'en';
+};
+
+/**
+ * VibesContextを単体で利用することもできますが、できる限りVibesProviderを通して利用してください。
+ */
+export const VibesContext = React.createContext<VibesContextValue>({
+  responsive: false,
+  portalParent: document.body,
+  portalParentRef: undefined,
+  lang: 'ja',
+});
+
+```
+
+### src/utilities/VibesProvider.tsx
+```
+typescript
+import * as React from 'react';
+import { useMedia } from './useMedia';
+import { ThemeContext, ThemeProvider } from 'styled-components';
+import { VibesContext } from './VibesContext';
+import {
+  TabletBoundaryWidth,
+  MobileBoundaryWidth,
+  NarrowMobileBoundaryWidth,
+} from '../constants';
+
+export type MediaType = 'pc' | 'tablet' | 'mobile';
+
+const baseRemSize = 16;
+const deviceRemSize =
+  typeof document === 'undefined'
+    ? baseRemSize
+    : parseFloat(getComputedStyle(document.documentElement).fontSize);
+
+/**
+ * Vibes共通のコンテクストを提供するProviderコンポーネントです。
+ *
+ * Provider component which determine media type according to screen width.
+ *
+ * 320 ~ 767px mobile
+ * 768 ~ 1024px tablet
+ * 1025px ~ pc
+ *
+ * (when 1rem = 16px)
+ */
+export const VibesProvider = ({
+  children,
+  fixedLayout = false,
+  portalParent = document.body,
+  portalParentRef = undefined,
+  lang = 'ja',
+}: {
+  children: React.ReactNode;
+  /**
+   * レイアウトを固定するかどうかを設定します
+   * styled-componentsでは常にpcレイアウトとして扱われます。
+   * VibesContextValueのresponsiveの値は!fixedLayoutで計算されます
+   * （fixedLayoutがfalseの場合、一部のコンポーネントの表示が画面幅に応じて変化するようになります。）
+   */
+  fixedLayout?: boolean;
+  /**
+   * ポップアップやダイアログ等のポータルを作成する際の親要素を指定します。
+   * 指定しない場合、document.bodyが親要素となります。
+   */
+  portalParent?: HTMLElement;
+  /**
+   * portalParentをrefで指定する場合に使用します。
+   */
+  portalParentRef?: React.RefObject<HTMLElement>;
+  /**
+   * 言語を指定します。
+   * 対応コンポーネントに埋め込まれたテキストが指定した言語で表示されます。
+   * デフォルトは 'ja' です。
+   */
+  lang?: 'ja' | 'en';
+}) => {
+  const isTablet = useMedia(
+    `not (min-width: ${TabletBoundaryWidth})`,
+    window.innerWidth <
+      deviceRemSize * Number(TabletBoundaryWidth.replace('rem', ''))
+  );
+  const isMobile = useMedia(
+    `not (min-width: ${MobileBoundaryWidth})`,
+    window.innerWidth <
+      deviceRemSize * Number(MobileBoundaryWidth.replace('rem', ''))
+  );
+  // Narrower than iPhone8 (375px)
+  const isNarrowMobile = useMedia(
+    `not (min-width: ${NarrowMobileBoundaryWidth})`,
+    window.innerWidth <
+      deviceRemSize * Number(NarrowMobileBoundaryWidth.replace('rem', ''))
+  );
+
+  const media = {
+    mediaType: (fixedLayout
+      ? 'pc'
+      : isMobile
+      ? 'mobile'
+      : isTablet
+      ? 'tablet'
+      : 'pc') as MediaType,
+    isNarrowMobile,
+  };
+
+  return (
+    <ThemeProvider theme={media}>
+      <VibesContext.Provider
+        value={{
+          responsive: !fixedLayout,
+          portalParent,
+          portalParentRef,
+          lang,
+        }}
+      >
+        {children}
+      </VibesContext.Provider>
+    </ThemeProvider>
+  );
+};
+
+export const useVibes = () => React.useContext(ThemeContext);
+
+export const useResponsive = (responsiveProp?: boolean) => {
+  const contextValue = React.useContext(VibesContext);
+  return responsiveProp === undefined
+    ? contextValue.responsive
+    : responsiveProp;
+};
+
+export const usePortalParentContext = () => {
+  const { portalParent, portalParentRef } = React.useContext(VibesContext);
+  return portalParent || portalParentRef?.current || document.body;
+};
+
+export const useLang = () => {
+  const { lang } = React.useContext(VibesContext);
+  return lang || 'ja';
+};
+
+```
+
+### src/utilities/commonProps.ts
+```
+typescript
+import {
+  pickFunctionalMarginProps,
+  FunctionalMarginProps,
+} from './functionalMarginClasses';
+import vbClassNames, { ModifierClassProps } from './vbClassNames';
+import { MarginClassProps } from './marginClasses';
+
+export type CommonDataProps = {
+  'data-guide'?: string;
+  'data-test'?: string;
+  'data-tracking'?: string;
+  'data-masking'?: boolean;
+};
+
+export type CommonProps = CommonDataProps & FunctionalMarginProps;
+
+export const pickCommonProps = (props: CommonProps): CommonProps => {
+  return {
+    ...pickCommonDataProps(props),
+    ...pickFunctionalMarginProps(props),
+  };
+};
+
+export const pickCommonDataProps = (props: CommonProps): CommonDataProps => ({
+  'data-guide': props['data-guide'],
+  'data-test': props['data-test'],
+  'data-tracking': props['data-tracking'],
+  'data-masking': props['data-masking'],
+});
+
+export default function commonProps(
+  props: CommonProps,
+  baseClassName: string,
+  classModifiers: ModifierClassProps = {},
+  deprecatedMarginClassProps: MarginClassProps = {}
+): CommonDataProps & { className: string } {
+  return {
+    'data-guide': props['data-guide'],
+    'data-test': props['data-test'],
+    'data-tracking': props['data-tracking'],
+    'data-masking': props['data-masking'],
+    className: vbClassNames(baseClassName, {
+      props,
+      modifier: classModifiers,
+      margin: deprecatedMarginClassProps,
+    }),
+  };
+}
+
+```
+
+### src/utilities/marginClasses.ts
+```
+typescript
+import functionalMarginClasses, {
+  MarginSize as FunctionalMarginSize,
+} from './functionalMarginClasses';
+
+export type MarginClassProps = {
+  /**
+   * 上方向にマージンを付けるか否か（ `mt` propsが使用できる場合はそちらを使用してください）
+   */
+  marginTop?: boolean;
+  /**
+   * 左方向にマージンを付けるか否か（ `ml` propsが使用できる場合はそちらを使用してください）
+   */
+  marginLeft?: boolean;
+  /**
+   * 右方向にマージンを付けるか否か（ `mr` propsが使用できる場合はそちらを使用してください）
+   */
+  marginRight?: boolean;
+  /**
+   * 下方向にマージンを付けるか否か（ `mb` propsが使用できる場合はそちらを使用してください）
+   */
+  marginBottom?: boolean;
+  /**
+   * `marginTop`, `marginLeft`, `marginRight`, `marginBottom` によるマージンの大きさ。無指定であれば 1rem。
+   * `xSmall` = 0.25rem, `small` = 0.5rem, `large` = 1.5rem, `xLarge` = 2rem, `xxlarge` = 3rem
+   */
+  marginSize?: 'xSmall' | 'small' | 'large' | 'xLarge' | 'xxLarge';
+};
+
+type MarginSize = 'xSmall' | 'small' | 'large' | 'xLarge' | 'xxLarge';
+
+function marginSizeToRem(
+  marginSize: MarginSize | undefined
+): FunctionalMarginSize {
+  switch (marginSize) {
+    case 'xSmall':
+      return 0.25;
+    case 'small':
+      return 0.5;
+    case 'large':
+      return 1.5;
+    case 'xLarge':
+      return 2;
+    case 'xxLarge':
+      return 3;
+  }
+  return 1;
+}
+
+export const pickMarginClassProps = ({
+  marginTop,
+  marginLeft,
+  marginRight,
+  marginBottom,
+  marginSize,
+}: MarginClassProps): MarginClassProps => ({
+  marginTop,
+  marginLeft,
+  marginRight,
+  marginBottom,
+  marginSize,
+});
+
+export const marginClassPropsToFunctionalMarginProps = ({
+  marginTop,
+  marginLeft,
+  marginRight,
+  marginBottom,
+  marginSize,
+}: MarginClassProps) => {
+  const remSize = marginSizeToRem(marginSize);
+  return {
+    mt: marginTop ? remSize : undefined,
+    mb: marginBottom ? remSize : undefined,
+    ml: marginLeft ? remSize : undefined,
+    mr: marginRight ? remSize : undefined,
+  };
+};
+
+export default function marginClasses(props: MarginClassProps): Array<string> {
+  return functionalMarginClasses(
+    marginClassPropsToFunctionalMarginProps(props)
+  ).split(' ');
+}
 
 ```
 
