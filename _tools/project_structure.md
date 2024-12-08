@@ -216,21 +216,38 @@
 - docs/Stylesheets.stories.mdx
 - docs/TypeScript.stories.mdx
 - examples/Collection.mdx
-- examples/Collection.stories.tsx
 - examples/Forms.mdx
-- examples/Forms.stories.tsx
 - examples/ImportWizard.mdx
-- examples/ImportWizard.stories.tsx
-- examples/Pages.stories.tsx
 - examples/ResponsiveLayout.mdx
-- examples/ResponsiveLayout.stories.tsx
 - examples/ThroughCommonProps.mdx
-- examples/ThroughCommonProps.stories.tsx
 - src/constants/Color.ts
 - src/constants/Font.ts
 - src/constants/Size.ts
 - src/constants/ZIndex.ts
 - src/constants/index.ts
+- src/utilities/AriaProps.ts
+- src/utilities/Ascii.ts
+- src/utilities/DOMUtil.ts
+- src/utilities/Dialog.tsx
+- src/utilities/Digits.ts
+- src/utilities/FixedPortal.tsx
+- src/utilities/FocusableEelements.ts
+- src/utilities/Mins.ts
+- src/utilities/ScrollPortal.tsx
+- src/utilities/TimeString.ts
+- src/utilities/VibesContext.ts
+- src/utilities/VibesProvider.tsx
+- src/utilities/browsers.ts
+- src/utilities/commonProps.ts
+- src/utilities/convertRemToPixel.ts
+- src/utilities/date.ts
+- src/utilities/functionalMarginClasses.ts
+- src/utilities/index.ts
+- src/utilities/keyboard.ts
+- src/utilities/marginClasses.ts
+- src/utilities/selfWindowNavigator.ts
+- src/utilities/useMedia.ts
+- src/utilities/vbClassNames.ts
 - src/internal/CommonStyle.ts
 - src/lv1/buttons/Button.tsx
 - src/lv1/buttons/TextButton.tsx
@@ -246,11 +263,6 @@
 - src/lv2/dialogs/MessageDialog.tsx
 - src/lv2/formControl/FormControl.tsx
 - src/lv2/messageBlock/MessageBlock.tsx
-- src/utilities/AriaProps.ts
-- src/utilities/VibesContext.ts
-- src/utilities/VibesProvider.tsx
-- src/utilities/commonProps.ts
-- src/utilities/marginClasses.ts
 
 ## 出力ファイル詳細
 
@@ -1173,1342 +1185,6 @@ import { Story, Canvas } from '@storybook/addon-docs/blocks';
 
 ```
 
-### examples/Collection.stories.tsx
-```
-typescript
-import * as React from 'react';
-import { MdAdd, MdFilterList } from 'react-icons/md';
-import Collection from './Collection.mdx';
-
-import {
-  Container,
-  ContentsBase,
-  Breadcrumbs,
-  MarginBase,
-  JumpButton,
-  Button,
-  SearchField,
-  SelectBox,
-  Paragraph,
-  WithSideContent,
-  ListTable,
-  HeadlineArea,
-  DropdownButton,
-  Pagination,
-  Pager,
-  Digits,
-  FormControl,
-  FormControlGroup,
-  TextField,
-  DigitsInput,
-  DateInput,
-  ColumnBase,
-  SectionTitle,
-  VisuallyHidden,
-  NoSearchResults,
-  NoDataCreated,
-} from '../src';
-import { Order } from '../src/lv1/lists/TableListHeadCell';
-
-export default {
-  title: 'examples/Collection',
-  parameters: { docs: { page: Collection } },
-};
-
-type ListElm = {
-  title: string;
-  user: string;
-  amount: number;
-  status: string;
-  date: string;
-};
-const useData = () => {
-  const data: ListElm[] = [
-    {
-      title: '打ち合わせ費用',
-      user: 'フリー太郎',
-      amount: 100000,
-      status: '申請中',
-      date: '2020-10-01',
-    },
-    {
-      title: '書籍購入費',
-      user: 'user.email@example.com',
-      amount: 123000,
-      status: '申請中',
-      date: '2020-09-23',
-    },
-    {
-      title: '交通費',
-      user: '佐々木大輔',
-      amount: 2000,
-      status: '精算済',
-      date: '2020-10-11',
-    },
-    {
-      title: 'UFO撮影ロケ',
-      user: '五反田花子',
-      amount: 3000000,
-      status: '却下',
-      date: '2020-09-12',
-    },
-    {
-      title: 'ツチノコ捜索費',
-      user: '三田次郎',
-      amount: 1000000,
-      status: '申請中',
-      date: '2020-11-01',
-    },
-    {
-      title: 'オフィス備品',
-      user: 'フリー太郎',
-      amount: 48000,
-      status: '精算済',
-      date: '2020-09-12',
-    },
-    {
-      title: '書籍購入費',
-      user: 'user.email@example.com',
-      amount: 2800,
-      status: '申請中',
-      date: '2020-10-12',
-    },
-    {
-      title: 'ネコのエサ代',
-      user: '三田次郎',
-      amount: 3000,
-      status: '申請中',
-      date: '2020-10-27',
-    },
-    {
-      title: '駐車場代',
-      user: 'フリー太郎',
-      amount: 4000,
-      status: '申請中',
-      date: '2020-10-05',
-    },
-    {
-      title: 'PC用品',
-      user: '五反田花子',
-      amount: 800000,
-      status: '申請中',
-      date: '2020-10-21',
-    },
-  ];
-
-  const [sortKey, setSortKey] = React.useState<keyof ListElm>('date');
-  const [sortOrder, setSortOrder] = React.useState<Order>('desc');
-  const [statuses, setStatuses] = React.useState<boolean[]>(
-    Array(data.length).fill(false)
-  );
-
-  const nextOrder: { [key in Order]: Order } = {
-    asc: 'desc',
-    desc: 'init',
-    init: 'asc',
-  };
-
-  const sort = (newKey: keyof ListElm) => {
-    if (sortKey === newKey) {
-      setSortOrder((prev) => nextOrder[prev]);
-    } else {
-      setSortKey(newKey);
-      setSortOrder('asc');
-    }
-    // ソートしたときはチェックボックスの状態をリセット
-    setStatuses(Array(data.length).fill(false));
-  };
-
-  const changeAllStatus = (newStatus: boolean) => {
-    setStatuses(Array(data.length).fill(newStatus));
-  };
-
-  const changeRowStatus = (newStatus: boolean, rowIndex: number) => {
-    const newStatuses = statuses.slice();
-    newStatuses[rowIndex] = newStatus;
-    setStatuses(newStatuses);
-  };
-
-  const sortedData =
-    sortOrder === 'init'
-      ? data
-      : data
-          .slice()
-          .sort(
-            (a, b) =>
-              (typeof a[sortKey] === 'number' && typeof b[sortKey] === 'number'
-                ? Number(a[sortKey]) - Number(b[sortKey])
-                : String(a[sortKey]).localeCompare(String(b[sortKey]))) *
-              (sortOrder === 'desc' ? -1 : 1)
-          );
-
-  const noResults: ListElm[] = [];
-
-  return {
-    sortKey,
-    sortOrder,
-    statuses,
-    sort,
-    sortedData,
-    noResults,
-    changeRowStatus,
-    changeAllStatus,
-  };
-};
-
-export const CollectionPage = () => {
-  const {
-    sort,
-    sortKey,
-    sortOrder,
-    statuses,
-    sortedData,
-    changeAllStatus,
-    changeRowStatus,
-  } = useData();
-
-  return (
-    <Container width="wide">
-      <ContentsBase>
-        <Breadcrumbs
-          mb={1}
-          links={[
-            { title: 'ホーム', url: '/' },
-            { title: '申請一覧', url: '/path/' },
-          ]}
-        />
-        <HeadlineArea
-          pageTitle="コレクション表示"
-          relatedMenus={
-            <>
-              <JumpButton url="/path/to/related/1" mr={1}>
-                関連機能1
-              </JumpButton>
-              <JumpButton url="/path/to/related/2" mr={1}>
-                関連機能2
-              </JumpButton>
-              <DropdownButton
-                dropdownContents={[
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service1',
-                    text: 'サービス1',
-                    target: '_blank',
-                  },
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service2',
-                    text: 'サービス2',
-                    target: '_blank',
-                  },
-                  { type: 'rule' },
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service3',
-                    text: '関連するアプリを探す',
-                    target: '_blank',
-                  },
-                ]}
-                buttonLabel="関連サービス・アプリ"
-              />
-            </>
-          }
-        >
-          これはコレクション表示のサンプルです。ここにはこの画面の説明を書きます。説明が必要ないような画面だったら無理して書かなくてええんやで。
-        </HeadlineArea>
-        <MarginBase mb={1}>
-          <Button IconComponent={MdAdd} mr={1}>
-            新規追加
-          </Button>
-          <JumpButton url="/path/to/import">インポート</JumpButton>
-        </MarginBase>
-        <MarginBase mb={2}>
-          <SearchField
-            width="large"
-            placeholder="タイトル、ユーザー名、メールアドレスなどで検索"
-            marginRight
-            marginSize="small"
-          />
-          <Button>検索</Button>
-        </MarginBase>
-
-        <WithSideContent
-          mb={1}
-          sideContent={
-            <>
-              <Pagination
-                rowsPerPageOptions={[
-                  { value: '10' },
-                  { value: '20' },
-                  { value: '50' },
-                  { value: '100' },
-                  { value: '200' },
-                ]}
-                rowsPerPageValue={20}
-                currentPage={1}
-                rowCount={999}
-                mr={1}
-              />
-              <DropdownButton
-                buttonLabel="エクスポート"
-                dropdownContents={[
-                  {
-                    type: 'selectable',
-                    text: 'CSV形式でエクスポート',
-                  },
-                  {
-                    type: 'selectable',
-                    text: 'JSON形式でエクスポート',
-                  },
-                  { type: 'rule' },
-                  {
-                    type: 'selectable',
-                    text: 'エクスポート履歴',
-                  },
-                ]}
-              />
-            </>
-          }
-        >
-          <DropdownButton
-            buttonLabel="一括操作"
-            dropdownContents={[
-              {
-                type: 'selectable',
-                text: 'ステータスを変更',
-              },
-              { type: 'selectable', text: '削除' },
-            ]}
-            mr={0.5}
-          />
-          {statuses.filter((e) => e).length > 0 && (
-            <Paragraph inline>
-              {statuses.filter((e) => e).length}件を選択中
-            </Paragraph>
-          )}
-        </WithSideContent>
-        <ListTable
-          mr={-1.5}
-          ml={-1.5}
-          headers={[
-            {
-              value: 'タイトル',
-              minWidth: 15,
-              onClick: () => sort('title'),
-              ordering: (sortKey == 'title' && sortOrder) || 'init',
-            },
-            {
-              value: 'ユーザー',
-              minWidth: 10,
-              onClick: () => sort('user'),
-              ordering: (sortKey == 'user' && sortOrder) || 'init',
-            },
-            {
-              value: '金額',
-              minWidth: 5,
-              alignRight: true,
-              onClick: () => sort('amount'),
-              ordering: (sortKey == 'amount' && sortOrder) || 'init',
-            },
-            {
-              value: 'ステータス',
-              onClick: () => sort('status'),
-              ordering: (sortKey == 'status' && sortOrder) || 'init',
-            },
-            {
-              value: '作成日',
-              onClick: () => sort('date'),
-              ordering: (sortKey == 'date' && sortOrder) || 'init',
-            },
-            { value: '操作' },
-          ]}
-          onChangeHeaderCheckBox={(e) => changeAllStatus(e.target.checked)}
-          rows={sortedData.map((row, i) => ({
-            checked: statuses[i],
-            onChangeCheckBox: (e) => {
-              changeRowStatus(e.target.checked, i);
-            },
-            url: `/path/to/single/${i}`,
-            cells: [
-              { value: row.title },
-              { value: row.user, breakWord: true },
-              { value: Digits.formalize(row.amount), alignRight: true },
-              { value: row.status },
-              { value: row.date },
-              {
-                value: (
-                  <>
-                    <Button mr={0.5} small appearance="tertiary">
-                      コピー
-                    </Button>
-                    <Button mr={0.5} danger small appearance="tertiary">
-                      削除
-                    </Button>
-                  </>
-                ),
-              },
-            ],
-          }))}
-          withCheckBox
-        ></ListTable>
-        <Pager
-          currentPage={1}
-          pageCount={99}
-          onPageChange={() => {
-            /* 2ページ目以降作ってないので許して */
-          }}
-        />
-      </ContentsBase>
-    </Container>
-  );
-};
-
-export const ListTableWithCheckBox = () => {
-  const {
-    sort,
-    sortKey,
-    sortOrder,
-    statuses,
-    sortedData,
-    changeAllStatus,
-    changeRowStatus,
-  } = useData();
-
-  return (
-    <>
-      <ListTable
-        mr={-1.5}
-        ml={-1.5}
-        headers={[
-          {
-            value: 'タイトル',
-            minWidth: 15,
-            onClick: () => sort('title'),
-            ordering: (sortKey == 'title' && sortOrder) || 'init',
-          },
-          {
-            value: 'ユーザー',
-            minWidth: 10,
-            onClick: () => sort('user'),
-            ordering: (sortKey == 'user' && sortOrder) || 'init',
-          },
-          {
-            value: '金額',
-            minWidth: 5,
-            alignRight: true,
-            onClick: () => sort('amount'),
-            ordering: (sortKey == 'amount' && sortOrder) || 'init',
-          },
-          {
-            value: 'ステータス',
-            onClick: () => sort('status'),
-            ordering: (sortKey == 'status' && sortOrder) || 'init',
-          },
-          {
-            value: '作成日',
-            onClick: () => sort('date'),
-            ordering: (sortKey == 'date' && sortOrder) || 'init',
-          },
-          { value: '操作' },
-        ]}
-        onChangeHeaderCheckBox={(e) => changeAllStatus(e.target.checked)}
-        rows={sortedData.map((row, i) => ({
-          checked: statuses[i],
-          onChangeCheckBox: (e) => {
-            changeRowStatus(e.target.checked, i);
-          },
-          url: `/path/to/single/${i}`,
-          cells: [
-            { value: row.title },
-            { value: row.user, breakWord: true },
-            { value: Digits.formalize(row.amount), alignRight: true },
-            { value: row.status },
-            { value: row.date },
-            {
-              value: (
-                <>
-                  <Button mr={0.5} small appearance="tertiary">
-                    コピー
-                  </Button>
-                  <Button mr={0.5} danger small appearance="tertiary">
-                    削除
-                  </Button>
-                </>
-              ),
-            },
-          ],
-        }))}
-        withCheckBox
-      ></ListTable>
-      <Pager
-        currentPage={1}
-        pageCount={99}
-        onPageChange={() => {
-          /* 2ページ目以降作ってないので許して */
-        }}
-      />
-    </>
-  );
-};
-
-export const FilteredObjectsActionArea = () => (
-  <WithSideContent
-    mb={1}
-    sideContent={
-      <>
-        <Pagination
-          rowsPerPageOptions={[
-            { value: '10' },
-            { value: '20' },
-            { value: '50' },
-            { value: '100' },
-            { value: '200' },
-          ]}
-          rowsPerPageValue={20}
-          currentPage={1}
-          rowCount={999}
-          mr={1}
-        />
-        <DropdownButton
-          buttonLabel="エクスポート"
-          dropdownContents={[
-            {
-              type: 'selectable',
-              text: 'CSV形式でエクスポート',
-            },
-            {
-              type: 'selectable',
-              text: 'JSON形式でエクスポート',
-            },
-            { type: 'rule' },
-            {
-              type: 'selectable',
-              text: 'エクスポート履歴',
-            },
-          ]}
-        />
-      </>
-    }
-  >
-    <DropdownButton
-      buttonLabel="一括操作"
-      dropdownContents={[
-        {
-          type: 'selectable',
-          text: 'ステータスを変更',
-        },
-        { type: 'selectable', text: '削除' },
-      ]}
-    />
-  </WithSideContent>
-);
-
-export const AllObjectsActionArea = () => (
-  <>
-    <MarginBase mb={1}>
-      <Button IconComponent={MdAdd} mr={1}>
-        新規追加
-      </Button>
-      <JumpButton url="/path/to/import">インポート</JumpButton>
-    </MarginBase>
-    <MarginBase mb={2}>
-      <SearchField
-        width="large"
-        placeholder="タイトル、ユーザー名、メールアドレスなどで検索"
-        marginRight
-        marginSize="small"
-      />
-      <Button>検索</Button>
-    </MarginBase>
-  </>
-);
-
-export const WithComplexFilter = () => {
-  const {
-    sort,
-    sortKey,
-    sortOrder,
-    statuses,
-    sortedData,
-    changeAllStatus,
-    changeRowStatus,
-  } = useData();
-
-  return (
-    <Container width="wide">
-      <ContentsBase>
-        <Breadcrumbs
-          mb={1}
-          links={[
-            { title: 'ホーム', url: '/' },
-            { title: '申請一覧', url: '/path/' },
-          ]}
-        />
-        <HeadlineArea
-          pageTitle="コレクション表示"
-          relatedMenus={
-            <>
-              <JumpButton url="/path/to/related/1" mr={1}>
-                関連機能1
-              </JumpButton>
-              <JumpButton url="/path/to/related/2" mr={1}>
-                関連機能2
-              </JumpButton>
-              <DropdownButton
-                dropdownContents={[
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service1',
-                    text: 'サービス1',
-                    target: '_blank',
-                  },
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service2',
-                    text: 'サービス2',
-                    target: '_blank',
-                  },
-                  { type: 'rule' },
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service3',
-                    text: '関連するアプリを探す',
-                    target: '_blank',
-                  },
-                ]}
-                buttonLabel="関連サービス・アプリ"
-              />
-            </>
-          }
-        >
-          これはコレクション表示のサンプルです。ここにはこの画面の説明を書きます。説明が必要ないような画面だったら無理して書かなくてええんやで。
-        </HeadlineArea>
-        <MarginBase mb={1}>
-          <Button IconComponent={MdAdd} mr={1}>
-            新規追加
-          </Button>
-          <JumpButton url="/path/to/import">インポート</JumpButton>
-        </MarginBase>
-        <ColumnBase paddingSize="small" mb={2}>
-          <WithSideContent
-            verticalAlign="middle"
-            sideContent={
-              <Button appearance="tertiary">検索条件をクリア</Button>
-            }
-          >
-            <SectionTitle>検索条件</SectionTitle>
-          </WithSideContent>
-          <FormControlGroup>
-            <FormControl label="タイトル" fieldId="form1-title" mr={1} mb={1}>
-              <TextField id="form1-title" />
-            </FormControl>
-            <FormControl label="ユーザー" fieldId="form1-user" mr={1} mb={1}>
-              <TextField id="form1-user" width="small" />
-            </FormControl>
-            <FormControl label="金額" mr={1} mb={1}>
-              <DigitsInput nullable label="金額の下限" width="small" />
-              〜
-              <DigitsInput nullable label="金額の上限" width="small" />
-            </FormControl>
-            <FormControl
-              label="ステータス"
-              fieldId="form1-status"
-              mr={1}
-              mb={1}
-            >
-              <SelectBox
-                options={[
-                  { name: '申請中' },
-                  { name: '精算済' },
-                  { name: '却下' },
-                ]}
-                id="form1-status"
-                width="small"
-              />
-            </FormControl>
-            <FormControl label="日付" mr={1} mb={1}>
-              <DateInput label="日付の下限" width="small" />
-              〜
-              <DateInput label="日付の上限" width="small" />
-            </FormControl>
-          </FormControlGroup>
-          <Button IconComponent={MdFilterList}>絞り込む</Button>
-        </ColumnBase>
-
-        <VisuallyHidden>
-          {/* 検索条件の見出しを立てているため、一覧部分にも視覚的には見えないかたちで見出しを立てる */}
-          <SectionTitle>申請の一覧</SectionTitle>
-        </VisuallyHidden>
-        <WithSideContent
-          mb={1}
-          sideContent={
-            <>
-              <Pagination
-                rowsPerPageOptions={[
-                  { value: '10' },
-                  { value: '20' },
-                  { value: '50' },
-                  { value: '100' },
-                  { value: '200' },
-                ]}
-                rowsPerPageValue={20}
-                currentPage={1}
-                rowCount={999}
-                mr={1}
-              />
-              <DropdownButton
-                buttonLabel="エクスポート"
-                dropdownContents={[
-                  {
-                    type: 'selectable',
-                    text: 'CSV形式でエクスポート',
-                  },
-                  {
-                    type: 'selectable',
-                    text: 'JSON形式でエクスポート',
-                  },
-                  { type: 'rule' },
-                  {
-                    type: 'selectable',
-                    text: 'エクスポート履歴',
-                  },
-                ]}
-              />
-            </>
-          }
-        >
-          <DropdownButton
-            buttonLabel="一括操作"
-            dropdownContents={[
-              {
-                type: 'selectable',
-                text: 'ステータスを変更',
-              },
-              { type: 'selectable', text: '削除' },
-            ]}
-            mr={0.5}
-          />
-          {statuses.filter((e) => e).length > 0 && (
-            <Paragraph inline>
-              {statuses.filter((e) => e).length}件を選択中
-            </Paragraph>
-          )}
-        </WithSideContent>
-        <ListTable
-          mr={-1.5}
-          ml={-1.5}
-          headers={[
-            {
-              value: 'タイトル',
-              minWidth: 15,
-              onClick: () => sort('title'),
-              ordering: (sortKey == 'title' && sortOrder) || 'init',
-            },
-            {
-              value: 'ユーザー',
-              minWidth: 10,
-              onClick: () => sort('user'),
-              ordering: (sortKey == 'user' && sortOrder) || 'init',
-            },
-            {
-              value: '金額',
-              minWidth: 5,
-              alignRight: true,
-              onClick: () => sort('amount'),
-              ordering: (sortKey == 'amount' && sortOrder) || 'init',
-            },
-            {
-              value: 'ステータス',
-              onClick: () => sort('status'),
-              ordering: (sortKey == 'status' && sortOrder) || 'init',
-            },
-            {
-              value: '作成日',
-              onClick: () => sort('date'),
-              ordering: (sortKey == 'date' && sortOrder) || 'init',
-            },
-            { value: '操作' },
-          ]}
-          onChangeHeaderCheckBox={(e) => changeAllStatus(e.target.checked)}
-          rows={sortedData.map((row, i) => ({
-            checked: statuses[i],
-            onChangeCheckBox: (e) => {
-              changeRowStatus(e.target.checked, i);
-            },
-            url: `/path/to/single/${i}`,
-            cells: [
-              { value: row.title },
-              { value: row.user, breakWord: true },
-              { value: Digits.formalize(row.amount), alignRight: true },
-              { value: row.status },
-              { value: row.date },
-              {
-                value: (
-                  <>
-                    <Button mr={0.5} small appearance="tertiary">
-                      コピー
-                    </Button>
-                    <Button mr={0.5} danger small appearance="tertiary">
-                      削除
-                    </Button>
-                  </>
-                ),
-              },
-            ],
-          }))}
-          withCheckBox
-        ></ListTable>
-        <Pager
-          currentPage={1}
-          pageCount={99}
-          onPageChange={() => {
-            /* 2ページ目以降作ってないので許して */
-          }}
-        />
-      </ContentsBase>
-    </Container>
-  );
-};
-
-export const WithoutCheckbox = () => {
-  const { sort, sortKey, sortOrder, sortedData } = useData();
-
-  return (
-    <Container width="wide">
-      <ContentsBase>
-        <Breadcrumbs
-          mb={1}
-          links={[
-            { title: 'ホーム', url: '/' },
-            { title: '申請一覧', url: '/path/' },
-          ]}
-        />
-        <HeadlineArea
-          pageTitle="コレクション表示"
-          relatedMenus={
-            <>
-              <JumpButton url="/path/to/related/1" mr={1}>
-                関連機能1
-              </JumpButton>
-              <JumpButton url="/path/to/related/2" mr={1}>
-                関連機能2
-              </JumpButton>
-              <DropdownButton
-                dropdownContents={[
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service1',
-                    text: 'サービス1',
-                    target: '_blank',
-                  },
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service2',
-                    text: 'サービス2',
-                    target: '_blank',
-                  },
-                  { type: 'rule' },
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service3',
-                    text: '関連するアプリを探す',
-                    target: '_blank',
-                  },
-                ]}
-                buttonLabel="関連サービス・アプリ"
-              />
-            </>
-          }
-        >
-          これはコレクション表示のサンプルです。ここにはこの画面の説明を書きます。説明が必要ないような画面だったら無理して書かなくてええんやで。
-        </HeadlineArea>
-        <MarginBase mb={1}>
-          <Button IconComponent={MdAdd} mr={1}>
-            新規追加
-          </Button>
-          <JumpButton url="/path/to/import">インポート</JumpButton>
-        </MarginBase>
-
-        <WithSideContent
-          mb={1}
-          sideContent={
-            <>
-              <Pagination
-                rowsPerPageOptions={[
-                  { value: '10' },
-                  { value: '20' },
-                  { value: '50' },
-                  { value: '100' },
-                  { value: '200' },
-                ]}
-                rowsPerPageValue={20}
-                currentPage={1}
-                rowCount={999}
-                mr={1}
-              />
-              <DropdownButton
-                buttonLabel="エクスポート"
-                dropdownContents={[
-                  {
-                    type: 'selectable',
-                    text: 'CSV形式でエクスポート',
-                  },
-                  {
-                    type: 'selectable',
-                    text: 'JSON形式でエクスポート',
-                  },
-                  { type: 'rule' },
-                  {
-                    type: 'selectable',
-                    text: 'エクスポート履歴',
-                  },
-                ]}
-              />
-            </>
-          }
-        >
-          <SearchField
-            width="large"
-            placeholder="タイトル、ユーザー名、メールアドレスなどで検索"
-            marginRight
-            marginSize="small"
-          />
-          <Button>検索</Button>
-        </WithSideContent>
-        <ListTable
-          mr={-1.5}
-          ml={-1.5}
-          headers={[
-            {
-              value: 'タイトル',
-              minWidth: 15,
-              onClick: () => sort('title'),
-              ordering: (sortKey == 'title' && sortOrder) || 'init',
-            },
-            {
-              value: 'ユーザー',
-              minWidth: 10,
-              onClick: () => sort('user'),
-              ordering: (sortKey == 'user' && sortOrder) || 'init',
-            },
-            {
-              value: '金額',
-              minWidth: 5,
-              alignRight: true,
-              onClick: () => sort('amount'),
-              ordering: (sortKey == 'amount' && sortOrder) || 'init',
-            },
-            {
-              value: 'ステータス',
-              onClick: () => sort('status'),
-              ordering: (sortKey == 'status' && sortOrder) || 'init',
-            },
-            {
-              value: '作成日',
-              onClick: () => sort('date'),
-              ordering: (sortKey == 'date' && sortOrder) || 'init',
-            },
-            { value: '操作' },
-          ]}
-          rows={sortedData.map((row, i) => ({
-            url: `/path/to/single/${i}`,
-            cells: [
-              { value: row.title },
-              { value: row.user, breakWord: true },
-              { value: Digits.formalize(row.amount), alignRight: true },
-              { value: row.status },
-              { value: row.date },
-              {
-                value: (
-                  <>
-                    <Button mr={0.5} small appearance="tertiary">
-                      コピー
-                    </Button>
-                    <Button mr={0.5} danger small appearance="tertiary">
-                      削除
-                    </Button>
-                  </>
-                ),
-              },
-            ],
-          }))}
-        ></ListTable>
-        <Pager
-          currentPage={1}
-          pageCount={99}
-          onPageChange={() => {
-            /* 2ページ目以降作ってないので許して */
-          }}
-        />
-      </ContentsBase>
-    </Container>
-  );
-};
-
-export const NoSearchResultsFound = () => {
-  const { sort, sortKey, sortOrder, noResults } = useData();
-
-  return (
-    <Container width="wide">
-      <ContentsBase>
-        <Breadcrumbs
-          mb={1}
-          links={[
-            { title: 'ホーム', url: '/' },
-            { title: '申請一覧', url: '/path/' },
-          ]}
-        />
-        <HeadlineArea
-          pageTitle="コレクション表示"
-          relatedMenus={
-            <>
-              <JumpButton url="/path/to/related/1" mr={1}>
-                関連機能1
-              </JumpButton>
-              <JumpButton url="/path/to/related/2" mr={1}>
-                関連機能2
-              </JumpButton>
-              <DropdownButton
-                dropdownContents={[
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service1',
-                    text: 'サービス1',
-                    target: '_blank',
-                  },
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service2',
-                    text: 'サービス2',
-                    target: '_blank',
-                  },
-                  { type: 'rule' },
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service3',
-                    text: '関連するアプリを探す',
-                    target: '_blank',
-                  },
-                ]}
-                buttonLabel="関連サービス・アプリ"
-              />
-            </>
-          }
-        >
-          これはコレクション表示のサンプルです。ここにはこの画面の説明を書きます。説明が必要ないような画面だったら無理して書かなくてええんやで。
-        </HeadlineArea>
-        <MarginBase mb={1}>
-          <Button IconComponent={MdAdd} mr={1}>
-            新規追加
-          </Button>
-          <JumpButton url="/path/to/import">インポート</JumpButton>
-        </MarginBase>
-
-        <WithSideContent
-          mb={1}
-          sideContent={
-            <>
-              <Paragraph inline mr={0.5}>
-                <label htmlFor="examples__collection__collectionPage__limitSelect">
-                  表示件数:
-                </label>
-              </Paragraph>
-              <SelectBox
-                id="examples__collection__collectionPage__limitSelect"
-                width="xSmall"
-                options={[
-                  { name: '10件' },
-                  { name: '20件' },
-                  { name: '50件' },
-                  { name: '100件' },
-                  { name: '200件' },
-                ]}
-                mr={1}
-              />
-              <Paragraph inline mr={1}>
-                0 / 0
-              </Paragraph>
-              <DropdownButton
-                buttonLabel="エクスポート"
-                dropdownContents={[
-                  {
-                    type: 'selectable',
-                    text: 'CSV形式でエクスポート',
-                  },
-                  {
-                    type: 'selectable',
-                    text: 'JSON形式でエクスポート',
-                  },
-                  { type: 'rule' },
-                  {
-                    type: 'selectable',
-                    text: 'エクスポート履歴',
-                  },
-                ]}
-              />
-            </>
-          }
-        >
-          <SearchField
-            width="large"
-            placeholder="タイトル、ユーザー名、メールアドレスなどで検索"
-            marginRight
-            marginSize="small"
-          />
-          <Button>検索</Button>
-        </WithSideContent>
-        {noResults.length > 0 ? (
-          <ListTable
-            mr={-1.5}
-            ml={-1.5}
-            headers={[
-              {
-                value: 'タイトル',
-                minWidth: 15,
-                onClick: () => sort('title'),
-                ordering: (sortKey == 'title' && sortOrder) || 'init',
-              },
-              {
-                value: 'ユーザー',
-                minWidth: 10,
-                onClick: () => sort('user'),
-                ordering: (sortKey == 'user' && sortOrder) || 'init',
-              },
-              {
-                value: '金額',
-                minWidth: 5,
-                alignRight: true,
-                onClick: () => sort('amount'),
-                ordering: (sortKey == 'amount' && sortOrder) || 'init',
-              },
-              {
-                value: 'ステータス',
-                onClick: () => sort('status'),
-                ordering: (sortKey == 'status' && sortOrder) || 'init',
-              },
-              {
-                value: '作成日',
-                onClick: () => sort('date'),
-                ordering: (sortKey == 'date' && sortOrder) || 'init',
-              },
-              { value: '操作' },
-            ]}
-            rows={noResults.map((row, i) => ({
-              url: `/path/to/single/${i}`,
-              cells: [
-                { value: row.title },
-                { value: row.user, breakWord: true },
-                { value: Digits.formalize(row.amount), alignRight: true },
-                { value: row.status },
-                { value: row.date },
-                {
-                  value: (
-                    <>
-                      <Button mr={0.5} small appearance="tertiary">
-                        コピー
-                      </Button>
-                      <Button mr={0.5} danger small appearance="tertiary">
-                        削除
-                      </Button>
-                    </>
-                  ),
-                },
-              ],
-            }))}
-          ></ListTable>
-        ) : (
-          <NoSearchResults mt={1} />
-        )}
-      </ContentsBase>
-    </Container>
-  );
-};
-
-export const NoDataCreatedYet = () => {
-  const { sort, sortKey, sortOrder, noResults } = useData();
-
-  return (
-    <Container width="wide">
-      <ContentsBase>
-        <Breadcrumbs
-          mb={1}
-          links={[
-            { title: 'ホーム', url: '/' },
-            { title: '申請一覧', url: '/path/' },
-          ]}
-        />
-        <HeadlineArea
-          pageTitle="コレクション表示"
-          relatedMenus={
-            <>
-              <JumpButton url="/path/to/related/1" mr={1}>
-                関連機能1
-              </JumpButton>
-              <JumpButton url="/path/to/related/2" mr={1}>
-                関連機能2
-              </JumpButton>
-              <DropdownButton
-                dropdownContents={[
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service1',
-                    text: 'サービス1',
-                    target: '_blank',
-                  },
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service2',
-                    text: 'サービス2',
-                    target: '_blank',
-                  },
-                  { type: 'rule' },
-                  {
-                    type: 'selectable',
-                    url: '/path/to/service3',
-                    text: '関連するアプリを探す',
-                    target: '_blank',
-                  },
-                ]}
-                buttonLabel="関連サービス・アプリ"
-              />
-            </>
-          }
-        >
-          これはコレクション表示のサンプルです。ここにはこの画面の説明を書きます。説明が必要ないような画面だったら無理して書かなくてええんやで。
-        </HeadlineArea>
-        <MarginBase mb={1}>
-          <Button IconComponent={MdAdd} mr={1}>
-            新規追加
-          </Button>
-          <JumpButton url="/path/to/import">インポート</JumpButton>
-        </MarginBase>
-
-        <WithSideContent
-          mb={1}
-          sideContent={
-            <>
-              <Paragraph inline mr={0.5}>
-                <label htmlFor="examples__collection__collectionPage__limitSelect">
-                  表示件数:
-                </label>
-              </Paragraph>
-              <SelectBox
-                id="examples__collection__collectionPage__limitSelect"
-                width="xSmall"
-                options={[
-                  { name: '10件' },
-                  { name: '20件' },
-                  { name: '50件' },
-                  { name: '100件' },
-                  { name: '200件' },
-                ]}
-                mr={1}
-              />
-              <Paragraph inline mr={1}>
-                0 / 0
-              </Paragraph>
-              <DropdownButton
-                buttonLabel="エクスポート"
-                dropdownContents={[
-                  {
-                    type: 'selectable',
-                    text: 'CSV形式でエクスポート',
-                  },
-                  {
-                    type: 'selectable',
-                    text: 'JSON形式でエクスポート',
-                  },
-                  { type: 'rule' },
-                  {
-                    type: 'selectable',
-                    text: 'エクスポート履歴',
-                  },
-                ]}
-              />
-            </>
-          }
-        >
-          <SearchField
-            width="large"
-            placeholder="タイトル、ユーザー名、メールアドレスなどで検索"
-            marginRight
-            marginSize="small"
-          />
-          <Button>検索</Button>
-        </WithSideContent>
-        {noResults.length > 0 ? (
-          <ListTable
-            mr={-1.5}
-            ml={-1.5}
-            headers={[
-              {
-                value: 'タイトル',
-                minWidth: 15,
-                onClick: () => sort('title'),
-                ordering: (sortKey == 'title' && sortOrder) || 'init',
-              },
-              {
-                value: 'ユーザー',
-                minWidth: 10,
-                onClick: () => sort('user'),
-                ordering: (sortKey == 'user' && sortOrder) || 'init',
-              },
-              {
-                value: '金額',
-                minWidth: 5,
-                alignRight: true,
-                onClick: () => sort('amount'),
-                ordering: (sortKey == 'amount' && sortOrder) || 'init',
-              },
-              {
-                value: 'ステータス',
-                onClick: () => sort('status'),
-                ordering: (sortKey == 'status' && sortOrder) || 'init',
-              },
-              {
-                value: '作成日',
-                onClick: () => sort('date'),
-                ordering: (sortKey == 'date' && sortOrder) || 'init',
-              },
-              { value: '操作' },
-            ]}
-            rows={noResults.map((row, i) => ({
-              url: `/path/to/single/${i}`,
-              cells: [
-                { value: row.title },
-                { value: row.user, breakWord: true },
-                { value: Digits.formalize(row.amount), alignRight: true },
-                { value: row.status },
-                { value: row.date },
-                {
-                  value: (
-                    <>
-                      <Button mr={0.5} small appearance="tertiary">
-                        コピー
-                      </Button>
-                      <Button mr={0.5} danger small appearance="tertiary">
-                        削除
-                      </Button>
-                    </>
-                  ),
-                },
-              ],
-            }))}
-          ></ListTable>
-        ) : (
-          <NoDataCreated mt={3}>
-            <Button appearance="primary" mt={1}>
-              新規作成
-            </Button>
-          </NoDataCreated>
-        )}
-      </ContentsBase>
-    </Container>
-  );
-};
-
-```
-
 ### examples/Forms.mdx
 ```
 markdown
@@ -2654,1240 +1330,6 @@ vibes では3種類のフォームの組み方を提供しています
 
 ```
 
-### examples/Forms.stories.tsx
-```
-typescript
-import * as React from 'react';
-import Forms from './Forms.mdx';
-import {
-  Button,
-  CheckBox,
-  DateField,
-  DateInput,
-  DescriptionList,
-  DigitsInput,
-  FloatingMessageBlock,
-  FormActions,
-  FormControl,
-  FormControlGroup,
-  InlineLink,
-  ListTable,
-  Loading,
-  Message,
-  MessageBlock,
-  MessageIcon,
-  NameField,
-  Note,
-  SelectBox,
-  TaskDialog,
-  TextField,
-  ToggleButton,
-  VisuallyHidden,
-  WithDescriptionContent,
-  WithBalloon,
-  RequiredIcon,
-} from '../src';
-import { MdAdd } from 'react-icons/md';
-
-export default {
-  title: 'examples/Forms',
-  parameters: { docs: { page: Forms } },
-};
-
-export const VerticalForm = () => (
-  <>
-    <DescriptionList
-      mb={1}
-      listContents={[
-        {
-          // 単体でフィールドを置くときはlabel の htmlFor を忘れない！！！
-          title: (
-            <label htmlFor="vertical-form__employee-code">従業員番号</label>
-          ),
-          value: <TextField id="vertical-form__employee-code" />,
-        },
-        // 姓名でフィールドが分かれているので、ここはlabelを使用しない
-        {
-          title: (
-            <>
-              氏名
-              <RequiredIcon ml={0.5} />
-            </>
-          ),
-          value: <NameField autoComplete="name" required />,
-        },
-        {
-          // 姓名でフィールドが分かれているので、ここはlabelを使用しない
-          title: '氏名（カタカナ）',
-          value: (
-            <WithDescriptionContent
-              renderContent={() => (
-                <NameField
-                  lastNamePlaceholder="セイ"
-                  firstNamePlaceholder="メイ"
-                  label="氏名（カタカナ）"
-                  autoComplete="name"
-                  required
-                />
-              )}
-              renderDescriptionContent={() => (
-                <Note mt={0.5}>全角カタカナで入力してください</Note>
-              )}
-            />
-          ),
-        },
-        {
-          title: <label htmlFor="vertical-form__display-name">表示名</label>,
-          value: (
-            <WithDescriptionContent
-              renderDescriptionContent={() => (
-                <Note mt={0.5}>
-                  空欄にした場合、氏名が表示名として使用されます
-                </Note>
-              )}
-              renderContent={(descId) => (
-                <TextField
-                  // renderDescriptionContentの内容がフィールドの説明として渡されるよう、aria-describedbyに渡している
-                  aria-describedby={descId}
-                  id="vertical-form__display-name"
-                />
-              )}
-            />
-          ),
-        },
-        {
-          // 「性別」はSelectBoxのラベルなので、htmlFor で紐付ける
-          title: <label htmlFor="vertical-form__sex">性別</label>,
-          value: (
-            <>
-              <SelectBox
-                id="vertical-form__sex"
-                width="small"
-                options={[
-                  { value: '0', name: '未選択' },
-                  { value: '1', name: '男性' },
-                  { value: '2', name: '女性' },
-                  { value: '9', name: 'その他' },
-                ]}
-              />
-              <CheckBox ml={1}>性別を自分以外のメンバーに公開する</CheckBox>
-            </>
-          ),
-        },
-        {
-          // 複数のフィールドがあるので、ここはlabelを使用しない
-          title: '住所',
-          value: (
-            <>
-              <FormControlGroup>
-                {/* フィールドがひとつの場合はfieldIdを指定 */}
-                <FormControl
-                  label="郵便番号"
-                  fieldId="vertical-form__postal"
-                  required
-                  mb={1}
-                  mr={1}
-                >
-                  <TextField
-                    id="vertical-form__postal"
-                    width="small"
-                    autoComplete="postal-code"
-                  />
-                </FormControl>
-                {/* フィールドがひとつの場合はfieldIdを指定 */}
-                <FormControl
-                  label="都道府県"
-                  fieldId="vertical-form__pref"
-                  required
-                  mb={1}
-                  mr={1}
-                >
-                  {/* 都道府県のSelectBoxを作るのめんどくさい（許して） */}
-                  <TextField
-                    id="vertical-form__pref"
-                    width="medium"
-                    autoComplete="address-level1"
-                  />
-                </FormControl>
-                {/* フィールドがひとつの場合はfieldIdを指定 */}
-                <FormControl
-                  label="市区町村"
-                  fieldId="vertical-form__city"
-                  required
-                  mb={1}
-                  mr={1}
-                >
-                  {/* 都道府県のSelectBoxを作るのめんどくさい（許して） */}
-                  <TextField
-                    id="vertical-form__city"
-                    width="medium"
-                    autoComplete="address-level2"
-                  />
-                </FormControl>
-              </FormControlGroup>
-              <FormControlGroup>
-                {/* フィールドがひとつの場合はfieldIdを指定 */}
-                <FormControl
-                  label="町名・番地"
-                  fieldId="vertical-form__address-line-1"
-                  required
-                  mb={1}
-                  mr={1}
-                >
-                  <TextField
-                    id="vertical-form__address-line-1"
-                    width="large"
-                    autoComplete="street-address"
-                  />
-                </FormControl>
-              </FormControlGroup>
-              <FormControlGroup>
-                {/* フィールドがひとつの場合はfieldIdを指定 */}
-                <FormControl
-                  label="建物名・部屋番号"
-                  fieldId="vertical-form__address-line-2"
-                  mb={1}
-                  mr={1}
-                >
-                  <TextField
-                    id="vertical-form__address-line-2"
-                    width="large"
-                    autoComplete="street-address"
-                  />
-                </FormControl>
-              </FormControlGroup>
-            </>
-          ),
-        },
-        {
-          // 年月日でフィールドが分かれているので、<label>を使用しない
-          title: '生年月日',
-          value: (
-            <DateField
-              selectedDate="1990-01-01"
-              startDate="1900-01-01"
-              endDate="2021-12-31"
-              autoComplete="bday"
-            />
-          ),
-        },
-        {
-          // 単体でフィールドを置くときはlabel の htmlFor を忘れない！！！
-          title: (
-            <label htmlFor="vertical-form__pension_num">基礎年金番号</label>
-          ),
-          value: (
-            <WithDescriptionContent
-              renderDescriptionContent={() => (
-                <Note mt={0.5}>
-                  基礎年金番号は10桁の数字で表され、4桁と6桁の組み合わせとなっています。
-                  <InlineLink
-                    href="https://www.nenkin.go.jp/faq/n_net/toroku/moshikomi/20150519.html"
-                    target="_blank"
-                  >
-                    基礎年金番号の調べ方
-                  </InlineLink>
-                </Note>
-              )}
-              renderContent={(descId) => (
-                <TextField
-                  id="vertical-form__pension_num"
-                  // renderDescriptionContentの内容がフィールドの説明として渡されるよう、aria-describedbyに渡している
-                  aria-describedby={descId}
-                />
-              )}
-            />
-          ),
-        },
-      ]}
-    />
-    <FormActions>
-      <Button appearance="primary">保存</Button>
-      <Button>キャンセル</Button>
-    </FormActions>
-  </>
-);
-
-export const HorizontalForm = () => (
-  <>
-    <FormControlGroup>
-      <FormControl mb={1} mr={1} label="種別">
-        <ToggleButton name="horizontal-form__type" type="radio">
-          収入
-        </ToggleButton>
-        <ToggleButton name="horizontal-form__type" type="radio">
-          支出
-        </ToggleButton>
-      </FormControl>
-      <FormControl
-        mb={1}
-        mr={1}
-        label="口座"
-        fieldId="horizontal-form__account"
-      >
-        <SelectBox
-          id="horizontal-form__account"
-          width="small"
-          options={[
-            { name: '現金' },
-            { name: 'freee銀行' },
-            { name: '五反田銀行' },
-          ]}
-        />
-      </FormControl>
-      <FormControl
-        mb={1}
-        mr={1}
-        label="取引先"
-        required
-        help="入出金の相手となる会社名や個人名を入力します"
-        fieldId="horizontal-form__partner"
-      >
-        <TextField id="horizontal-form__partner" required />
-      </FormControl>
-      <FormControl
-        mb={1}
-        mr={1}
-        label="金額"
-        required
-        fieldId="horizontal-form__amount"
-      >
-        <DigitsInput id="horizontal-form__amount" />
-      </FormControl>
-      <FormControl
-        mb={1}
-        mr={1}
-        label="摘要"
-        fieldId="hofizontal-form__description"
-        help="入出金の目的などを記載します"
-      >
-        <TextField width="large" id="hofizontal-form__description" required />
-      </FormControl>
-    </FormControlGroup>
-    <FormActions>
-      <Button appearance="primary">登録</Button>
-    </FormActions>
-  </>
-);
-
-export const ListForm = () => {
-  const [values, setValues] = React.useState<
-    {
-      date: string;
-      type: 'income' | 'expense';
-      amount: number;
-      note: string;
-    }[]
-  >([{ date: '2021-04-01', type: 'income', amount: 0, note: '' }]);
-  return (
-    <>
-      <ListTable
-        mb={0.5}
-        headers={[
-          { value: '日付' },
-          { value: '収支' },
-          // 通常のListTableでは金額は右寄せで配置するが、DigitsInput内が右寄せであり、DigitsInputの左端と揃えたいため、見出しセルは左寄せで配置する
-          { value: '金額' },
-          {
-            value: (
-              <>
-                備考
-                <MessageIcon label="ヘルプ" small>
-                  メモとして自由に使える欄です
-                </MessageIcon>
-              </>
-            ),
-          },
-          { value: <VisuallyHidden>行の操作</VisuallyHidden> },
-        ]}
-        rows={values.map((v, i) => ({
-          cells: [
-            {
-              value: (
-                <DateInput
-                  value={v.date}
-                  // 何行目の何の項目なのかわかるラベルにする
-                  label={`${i + 1}行目の日付`}
-                  width="small"
-                  onChange={(d) =>
-                    setValues([
-                      ...values.slice(0, i),
-                      { ...v, date: d },
-                      ...values.slice(i + 1),
-                    ])
-                  }
-                />
-              ),
-            },
-            {
-              value: (
-                <SelectBox
-                  value={v.type}
-                  // 何行目の何の項目なのかわかるラベルにする
-                  // 視覚的に見えるラベルとN:1なので、<label>要素は使用せず、aria-labelで表現する
-                  label={`${i + 1}行目の収支`}
-                  width="xSmall"
-                  onChange={(e) =>
-                    setValues([
-                      ...values.slice(0, i),
-                      {
-                        ...v,
-                        type:
-                          e.target.value === 'income' ? 'income' : 'expense',
-                      },
-                      ...values.slice(i + 1),
-                    ])
-                  }
-                  options={[
-                    { value: 'income', name: '収入' },
-                    { value: 'expense', name: '支出' },
-                  ]}
-                />
-              ),
-            },
-
-            {
-              value: (
-                <DigitsInput
-                  value={v.amount}
-                  // 何行目の何の項目なのかわかるラベルにする
-                  // 視覚的に見えるラベルとN:1なので、<label>要素は使用せず、aria-labelで表現する
-                  label={`${i + 1}行目の金額`}
-                  onChange={(a) =>
-                    setValues([
-                      ...values.slice(0, i),
-                      { ...v, amount: a || 0 },
-                      ...values.slice(i + 1),
-                    ])
-                  }
-                />
-              ),
-            },
-            {
-              value: (
-                <TextField
-                  value={v.note}
-                  // 何行目の何の項目なのかわかるラベルにする
-                  // 視覚的に見えるラベルとN:1なので、<label>要素は使用せず、aria-labelで表現する
-                  label={`${i + 1}行目の備考`}
-                  width="large"
-                  onChange={(e) =>
-                    setValues([
-                      ...values.slice(0, i),
-                      { ...v, note: e.target.value },
-                      ...values.slice(i + 1),
-                    ])
-                  }
-                />
-              ),
-            },
-            {
-              alignRight: true,
-              value: (
-                <Button
-                  onClick={() =>
-                    setValues([...values.slice(0, i), ...values.slice(i + 1)])
-                  }
-                  appearance="tertiary"
-                  small
-                  disabled={values.length === 1}
-                >
-                  行を削除
-                </Button>
-              ),
-            },
-          ],
-        }))}
-      />
-      <Button
-        IconComponent={MdAdd}
-        iconPosition="left"
-        onClick={() =>
-          setValues([
-            ...values,
-            { date: '2021-04-01', amount: 0, type: 'income', note: '' },
-          ])
-        }
-        // ListTableと左端を揃えるため、左側に1.5remのマージンを持たせている。
-        // 通常の使用では、ListTableの側に-1.5remのネガティブマージンを付けることも多いはず
-        ml={1.5}
-      >
-        行を追加
-      </Button>
-    </>
-  );
-};
-
-export const SubmitSuccessInteraction = () => {
-  const [message, setMessage] = React.useState('');
-  const [sending, setSending] = React.useState(false);
-
-  return (
-    <>
-      <Note mb={1}>
-        「保存」ボタンで送信中〜送信完了の動きを試すことができます
-      </Note>
-      <FormActions>
-        <Button
-          appearance="primary"
-          disabled={sending}
-          onClick={() => {
-            setMessage('');
-            setSending(true);
-            setTimeout(() => {
-              setMessage('保存しました');
-              setSending(false);
-            }, 600);
-          }}
-        >
-          保存
-        </Button>
-        <Button disabled={sending}>キャンセル</Button>
-      </FormActions>
-      <Loading coverAll isLoading={sending} />
-      {message && <FloatingMessageBlock success message={message} />}
-    </>
-  );
-};
-
-export const ErrorOnTaskDialog = () => {
-  const [message, setMessage] = React.useState('');
-  const [sending, setSending] = React.useState(false);
-  const [error, setError] = React.useState(false);
-  const [modalOpen, setModalOpen] = React.useState(false);
-
-  return (
-    <>
-      <Button onClick={() => setModalOpen(true)}>編集ダイアログを開く</Button>
-      <TaskDialog
-        isOpen={modalOpen}
-        title="編集"
-        primaryButtonLabel="保存"
-        closeButtonLabel="閉じる"
-        onRequestClose={() => setModalOpen(false)}
-        onPrimaryAction={() => {
-          setMessage('');
-          setSending(true);
-          setError(false);
-          setTimeout(() => {
-            setMessage(
-              '入力内容にエラーがあります。修正のうえ、再度お試しください'
-            );
-            setError(true);
-            setSending(false);
-          }, 600);
-        }}
-        disabled={sending}
-      >
-        {message && <MessageBlock error mb={1} message={message} />}
-        <DescriptionList
-          mr={-1.5}
-          ml={-1.5}
-          listContents={[
-            {
-              title: (
-                <label htmlFor="submit-error-interaction__amount">
-                  振込金額
-                  <RequiredIcon ml={0.5} />
-                </label>
-              ),
-              value: (
-                <>
-                  <DigitsInput
-                    id="submit-error-interaction__amount"
-                    required
-                    error={error}
-                    value={0}
-                  />
-                  {error && (
-                    <Message ml={1} error>
-                      0より大きい数値を入力してください
-                    </Message>
-                  )}
-                </>
-              ),
-            },
-            {
-              title: (
-                <label htmlFor="submit-error-interaction__account-from">
-                  振込元口座
-                  <RequiredIcon ml={0.5} />
-                </label>
-              ),
-              value: (
-                <>
-                  <SelectBox
-                    id="submit-error-interaction__account-from"
-                    options={[
-                      { name: '選択してください', value: 'default' },
-                      { name: 'freee銀行' },
-                      { name: '五反田銀行' },
-                      { name: '品川信用金庫' },
-                    ]}
-                    error={error}
-                    value="default"
-                    required
-                  />
-                  {error && (
-                    <Message ml={1} error>
-                      口座を選択してください
-                    </Message>
-                  )}
-                </>
-              ),
-            },
-            {
-              title: (
-                <label htmlFor="submit-error-interaction__name-from">
-                  振込名義
-                </label>
-              ),
-              value: (
-                <>
-                  <WithDescriptionContent
-                    renderContent={(descId) => (
-                      <>
-                        <TextField
-                          id="submit-error-interaction__name-from"
-                          // エラーメッセージがaria-desdribedbyになっているべきか悩ましいが、
-                          // ここでは他のフィールドと仕様をあわせやすいよう、エラーメッセージをaria-describedに入れない判断をした
-                          aria-describedby={descId}
-                          error={error}
-                          value="ふりーたろう"
-                        />
-                        {error && (
-                          <Message ml={1} error>
-                            半角カタカナで記入してください
-                          </Message>
-                        )}
-                      </>
-                    )}
-                    renderDescriptionContent={() => (
-                      <Note mt={0.5}>
-                        振込先に通知される名義を半角カタカナで記入してください。空欄にした場合は口座名義がそのまま使用されます。
-                      </Note>
-                    )}
-                  />
-                </>
-              ),
-            },
-            {
-              title: '振込先口座',
-              value: (
-                <>
-                  <FormControlGroup>
-                    <FormControl
-                      label="銀行コード"
-                      fieldId="submit-error-interaction__bank_to"
-                      help="銀行ごとに指定されている4桁の数字です"
-                      required
-                      mr={1.5}
-                      mb={1}
-                    >
-                      <TextField
-                        id="submit-error-interaction__bank_to"
-                        width="small"
-                        required
-                        value={'123'}
-                        error={error}
-                      />
-                      {error && (
-                        <MessageIcon error label="エラー" ml={0.5}>
-                          4桁の半角数字で記入してください
-                        </MessageIcon>
-                      )}
-                    </FormControl>
-                    <FormControl
-                      label="支店コード"
-                      fieldId="submit-error-interaction__branch_to"
-                      help="支店ごとに指定されている3桁の数字です"
-                      required
-                      mr={1.5}
-                      mb={1}
-                    >
-                      <TextField
-                        id="submit-error-interaction__branch_to"
-                        width="xSmall"
-                        required
-                        value=""
-                        error={error}
-                      />
-                      {error && (
-                        <MessageIcon error label="エラー" ml={0.5}>
-                          3桁の半角数字で記入してください
-                        </MessageIcon>
-                      )}
-                    </FormControl>
-                  </FormControlGroup>
-                  <FormControlGroup>
-                    <FormControl
-                      // ここだけエラー内容が思いつかんかった
-                      label="口座種別"
-                      fieldId="submit-error-interaction__account_type_to"
-                      required
-                      mr={1.5}
-                    >
-                      <SelectBox
-                        id="submit-error-interaction__account_type_to"
-                        options={[
-                          { name: '普通' },
-                          { name: '当座' },
-                          { name: '定期' },
-                        ]}
-                        width="xSmall"
-                        required
-                      />
-                    </FormControl>
-                    <FormControl
-                      label="口座番号"
-                      fieldId="submit-error-interaction__account_number_to"
-                      required
-                      mr={1.5}
-                      mb={1}
-                    >
-                      <TextField
-                        id="submit-error-interaction__account_number_to"
-                        width="medium"
-                        required
-                        value=""
-                        error={error}
-                      />
-                      {error && (
-                        <MessageIcon error label="エラー" ml={0.5}>
-                          7桁の半角数字で記入してください
-                        </MessageIcon>
-                      )}
-                    </FormControl>
-                    <FormControl
-                      label="口座名義"
-                      fieldId="submit-error-interaction__account_name_to"
-                      required
-                      mr={1.5}
-                      mb={1}
-                    >
-                      <TextField
-                        id="submit-error-interaction__account_name_to"
-                        width="medium"
-                        required
-                        value="ふりーはなこ"
-                        error={error}
-                      />
-                      {error && (
-                        <MessageIcon error label="エラー" ml={0.5}>
-                          半角カタカナで記入してください
-                        </MessageIcon>
-                      )}
-                    </FormControl>
-                  </FormControlGroup>
-                </>
-              ),
-            },
-          ]}
-        />
-        <Loading coverAll isLoading={sending} />
-        {message && <FloatingMessageBlock error message={message} />}
-      </TaskDialog>
-    </>
-  );
-};
-
-export const SubmitErrorInteraction = () => {
-  const [message, setMessage] = React.useState('');
-  const [sending, setSending] = React.useState(false);
-  const [error, setError] = React.useState(false);
-
-  return (
-    <>
-      <Note mb={1}>
-        「保存」ボタンで送信中〜エラー時の動きを試すことができます
-      </Note>
-
-      {message && <MessageBlock error mb={1} message={message} />}
-      <DescriptionList
-        mb={1}
-        listContents={[
-          {
-            title: (
-              <label htmlFor="submit-error-interaction__amount">
-                振込金額
-                <RequiredIcon ml={0.5} />
-              </label>
-            ),
-            value: (
-              <>
-                <DigitsInput
-                  id="submit-error-interaction__amount"
-                  required
-                  error={error}
-                  value={0}
-                />
-                {error && (
-                  <Message ml={1} error>
-                    0より大きい数値を入力してください
-                  </Message>
-                )}
-              </>
-            ),
-          },
-          {
-            title: (
-              <label htmlFor="submit-error-interaction__account-from">
-                振込元口座
-                <RequiredIcon ml={0.5} />
-              </label>
-            ),
-            value: (
-              <>
-                <SelectBox
-                  id="submit-error-interaction__account-from"
-                  options={[
-                    { name: '選択してください', value: 'default' },
-                    { name: 'freee銀行' },
-                    { name: '五反田銀行' },
-                    { name: '品川信用金庫' },
-                  ]}
-                  error={error}
-                  value="default"
-                  required
-                />
-                {error && (
-                  <Message ml={1} error>
-                    口座を選択してください
-                  </Message>
-                )}
-              </>
-            ),
-          },
-          {
-            title: (
-              <label htmlFor="submit-error-interaction__name-from">
-                振込名義
-              </label>
-            ),
-            value: (
-              <>
-                <WithDescriptionContent
-                  renderContent={(descId) => (
-                    <>
-                      <TextField
-                        id="submit-error-interaction__name-from"
-                        // エラーメッセージがaria-desdribedbyになっているべきか悩ましいが、
-                        // ここでは他のフィールドと仕様をあわせやすいよう、エラーメッセージをaria-describedに入れない判断をした
-                        aria-describedby={descId}
-                        error={error}
-                        value="ふりーたろう"
-                      />
-                      {error && (
-                        <Message ml={1} error>
-                          半角カタカナで記入してください
-                        </Message>
-                      )}
-                    </>
-                  )}
-                  renderDescriptionContent={() => (
-                    <Note mt={0.5}>
-                      振込先に通知される名義を半角カタカナで記入してください。空欄にした場合は口座名義がそのまま使用されます。
-                    </Note>
-                  )}
-                />
-              </>
-            ),
-          },
-          {
-            title: '振込先口座',
-            value: (
-              <>
-                <FormControlGroup>
-                  <FormControl
-                    label="銀行コード"
-                    fieldId="submit-error-interaction__bank_to"
-                    help="銀行ごとに指定されている4桁の数字です"
-                    required
-                    mr={1.5}
-                    mb={1}
-                  >
-                    <TextField
-                      id="submit-error-interaction__bank_to"
-                      width="small"
-                      required
-                      value={'123'}
-                      error={error}
-                    />
-                    {error && (
-                      <MessageIcon error label="エラー" ml={0.5}>
-                        4桁の半角数字で記入してください
-                      </MessageIcon>
-                    )}
-                  </FormControl>
-                  <FormControl
-                    label="支店コード"
-                    fieldId="submit-error-interaction__branch_to"
-                    help="支店ごとに指定されている3桁の数字です"
-                    required
-                    mr={1.5}
-                    mb={1}
-                  >
-                    <TextField
-                      id="submit-error-interaction__branch_to"
-                      width="xSmall"
-                      required
-                      value=""
-                      error={error}
-                    />
-                    {error && (
-                      <MessageIcon error label="エラー" ml={0.5}>
-                        3桁の半角数字で記入してください
-                      </MessageIcon>
-                    )}
-                  </FormControl>
-                </FormControlGroup>
-                <FormControlGroup>
-                  <FormControl
-                    // ここだけエラー内容が思いつかんかった
-                    label="口座種別"
-                    fieldId="submit-error-interaction__account_type_to"
-                    required
-                    mr={1.5}
-                  >
-                    <SelectBox
-                      id="submit-error-interaction__account_type_to"
-                      options={[
-                        { name: '普通' },
-                        { name: '当座' },
-                        { name: '定期' },
-                      ]}
-                      width="xSmall"
-                      required
-                    />
-                  </FormControl>
-                  <FormControl
-                    label="口座番号"
-                    fieldId="submit-error-interaction__account_number_to"
-                    required
-                    mr={1.5}
-                    mb={1}
-                  >
-                    <TextField
-                      id="submit-error-interaction__account_number_to"
-                      width="medium"
-                      required
-                      value=""
-                      error={error}
-                    />
-                    {error && (
-                      <MessageIcon error label="エラー" ml={0.5}>
-                        7桁の半角数字で記入してください
-                      </MessageIcon>
-                    )}
-                  </FormControl>
-                  <FormControl
-                    label="口座名義"
-                    fieldId="submit-error-interaction__account_name_to"
-                    required
-                    mr={1.5}
-                    mb={1}
-                  >
-                    <TextField
-                      id="submit-error-interaction__account_name_to"
-                      width="medium"
-                      required
-                      value="ふりーはなこ"
-                      error={error}
-                    />
-                    {error && (
-                      <MessageIcon error label="エラー" ml={0.5}>
-                        半角カタカナで記入してください
-                      </MessageIcon>
-                    )}
-                  </FormControl>
-                </FormControlGroup>
-              </>
-            ),
-          },
-        ]}
-      />
-
-      <FormActions>
-        <Button
-          appearance="primary"
-          disabled={sending}
-          onClick={() => {
-            setMessage('');
-            setSending(true);
-            setError(false);
-            setTimeout(() => {
-              setMessage(
-                '入力内容にエラーがあります。修正のうえ、再度お試しください'
-              );
-              setError(true);
-              setSending(false);
-            }, 600);
-          }}
-        >
-          保存
-        </Button>
-        <Button disabled={sending}>キャンセル</Button>
-      </FormActions>
-      <Loading coverAll isLoading={sending} />
-      {message && <FloatingMessageBlock error message={message} />}
-    </>
-  );
-};
-
-export const FrontendValidation = () => {
-  const [value, setValue] = React.useState('');
-  const validationMessage = !value.match(/^[ァ-ヾ]*$/)
-    ? '全角カタカナで入力してください'
-    : '';
-
-  const [error, setError] = React.useState(false);
-  const [statusMessage, setStatusMessage] = React.useState('');
-  const [serverValidationMessage, setServerValidationMessage] =
-    React.useState('');
-  const [sending, setSending] = React.useState(false);
-
-  return (
-    <>
-      <FormControl
-        fieldId="frontend-validation__corporate-name-kana"
-        label="事業所名（カタカナ）"
-        mb={1}
-      >
-        <WithBalloon
-          border="notice"
-          balloonDisabled={!validationMessage}
-          renderBalloonContent={() => validationMessage}
-          renderContent={() => (
-            <TextField
-              id="frontend-validation__corporate-name-kana"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              error={error}
-            />
-          )}
-        />
-        <VisuallyHidden autoRead>
-          {/* スクリーンリーダー向けに、フロントエンドバリデーションのメッセージをVisuallyHiddenで配置しています
-              `autoRead` を渡すことで、 `aria-live="polite"` になっているが、これが表示されているタイミングは入力中であることが多いため、自動的に読み上げられる可能性は低い。
-              （サーバーサイドのものでいいので）バリデーション結果が正しく伝わるよう、代替手段を提供する必要がある。
-              この例では保存ボタン押下後にFloatingMessageBlockで通知されるため、気付くことができる。
-           */}
-          {validationMessage}
-        </VisuallyHidden>
-        {serverValidationMessage && (
-          <Message ml={1} error>
-            {serverValidationMessage}
-          </Message>
-        )}
-      </FormControl>
-      <Button
-        appearance="primary"
-        disabled={sending}
-        onClick={() => {
-          setStatusMessage('');
-          setServerValidationMessage('');
-          setError(false);
-          setSending(true);
-          setTimeout(() => {
-            setSending(false);
-            if (!value.match(/^[ァ-ヾ]*$/)) {
-              setError(true);
-              setServerValidationMessage('全角カタカナで入力してください');
-              setStatusMessage(
-                '入力内容にエラーがあります。修正のうえ、再度お試しください'
-              );
-            } else {
-              setStatusMessage('保存しました');
-            }
-          }, 600);
-        }}
-      >
-        保存
-      </Button>
-      <Loading coverAll isLoading={sending} />
-      {statusMessage && (
-        <FloatingMessageBlock
-          error={error}
-          success={!error}
-          message={statusMessage}
-        />
-      )}
-    </>
-  );
-};
-
-export const DisableButtonIfInvalid = () => {
-  const [values, setValues] = React.useState({
-    companyName: '',
-    companyNameKana: '',
-    notes: '',
-  });
-  const [errorMessages, setErrorMessages] = React.useState({
-    companyName: '',
-    companyNameKana: '',
-    notes: '',
-  });
-
-  const validatedAsRequired =
-    values.companyName.length > 0 && values.companyNameKana.length > 0;
-  const validatedAsKatakana = !!values.companyNameKana.match(/^[ァ-ヾ]*$/);
-  const [statusMessage, setStatusMessage] = React.useState('');
-  const [sending, setSending] = React.useState(false);
-
-  return (
-    <>
-      <DescriptionList
-        mb={1}
-        listContents={[
-          {
-            title: (
-              <label htmlFor="disable-button-if-invalid__corporate-name">
-                事業所名
-                <RequiredIcon ml={0.5} />
-              </label>
-            ),
-            value: (
-              <>
-                <TextField
-                  id="disable-button-if-invalid__corporate-name"
-                  value={values.companyName}
-                  onChange={(e) =>
-                    setValues({
-                      ...values,
-                      companyName: e.target.value,
-                    })
-                  }
-                  onBlur={() =>
-                    setErrorMessages({
-                      ...errorMessages,
-                      companyName:
-                        values.companyName.length > 0
-                          ? ''
-                          : '事業所名は必須です',
-                    })
-                  }
-                  required
-                  error={!!errorMessages.companyName}
-                />
-                {errorMessages.companyName && (
-                  <Message error ml={1}>
-                    {errorMessages.companyName}
-                  </Message>
-                )}
-              </>
-            ),
-          },
-          {
-            title: (
-              <label htmlFor="disable-button-if-invalid__corporate-name-kana">
-                事業所名（カタカナ）
-                <RequiredIcon ml={0.5} />
-              </label>
-            ),
-            value: (
-              <>
-                <WithBalloon
-                  border="notice"
-                  balloonDisabled={validatedAsKatakana}
-                  renderBalloonContent={() =>
-                    !validatedAsKatakana ? '全角カタカナで入力してください' : ''
-                  }
-                  renderContent={() => (
-                    <TextField
-                      id="disable-button-if-invalid__corporate-name-kana"
-                      value={values.companyNameKana}
-                      onChange={(e) =>
-                        setValues({
-                          ...values,
-                          companyNameKana: e.target.value,
-                        })
-                      }
-                      onBlur={() =>
-                        setErrorMessages({
-                          ...errorMessages,
-                          companyNameKana: !validatedAsKatakana
-                            ? '全角カタカナで入力してください'
-                            : values.companyNameKana.length == 0
-                            ? '事業所名（カタカナ）は必須です'
-                            : '',
-                        })
-                      }
-                      required
-                      error={!!errorMessages.companyNameKana}
-                    />
-                  )}
-                />
-                <VisuallyHidden autoRead>
-                  {/*
-                    スクリーンリーダー向けに、フロントエンドバリデーションのメッセージをVisuallyHiddenで配置しています
-                    `autoRead` を渡すことで、 `aria-live="polite"` になっているが、これが表示されているタイミングは入力中であることが多いため、自動的に読み上げられる可能性は低い。
-                    （サーバーサイドのものでいいので）バリデーション結果が正しく伝わるよう、代替手段を提供する必要がある。
-                    この例では保存ボタン押下後にFloatingMessageBlockで通知されるため、気付くことができる。
-                  */}
-                  {!validatedAsKatakana ? '全角カタカナで入力してください' : ''}
-                </VisuallyHidden>
-                {errorMessages.companyNameKana && (
-                  <Message error ml={1}>
-                    {errorMessages.companyNameKana}
-                  </Message>
-                )}
-              </>
-            ),
-          },
-          {
-            title: (
-              <label htmlFor="disable-button-if-invalid__notes">備考</label>
-            ),
-            value: (
-              <TextField
-                id="disable-button-if-invalid__notes"
-                value={values.notes}
-                onChange={(e) =>
-                  setValues({ ...values, notes: e.target.value })
-                }
-                width="large"
-              />
-            ),
-          },
-        ]}
-      />
-      <WithDescriptionContent
-        position="horizontal"
-        renderContent={(descriptionId) => (
-          <Button
-            appearance="primary"
-            disabled={sending || !(validatedAsKatakana && validatedAsRequired)}
-            aria-describedby={descriptionId}
-            onClick={() => {
-              setStatusMessage('');
-              setSending(true);
-              setTimeout(() => {
-                setSending(false);
-                setStatusMessage('保存しました');
-              }, 600);
-            }}
-          >
-            保存
-          </Button>
-        )}
-        renderDescriptionContent={() =>
-          !validatedAsRequired ? (
-            <Note ml={0.5}>必須項目をすべて入力してください</Note>
-          ) : !validatedAsKatakana ? (
-            <Note ml={0.5}>入力内容に誤りがあります。ご確認ください</Note>
-          ) : undefined
-        }
-      />
-      <Loading coverAll isLoading={sending} />
-      {statusMessage && (
-        <FloatingMessageBlock success message={statusMessage} />
-      )}
-    </>
-  );
-};
-
-```
-
 ### examples/ImportWizard.mdx
 ```
 markdown
@@ -3942,479 +1384,6 @@ import { Story, Canvas } from '@storybook/addon-docs/blocks';
 
 ```
 
-### examples/ImportWizard.stories.tsx
-```
-typescript
-import * as React from 'react';
-import { MdFileDownload } from 'react-icons/md';
-import ImportWizard from './ImportWizard.mdx';
-
-import {
-  Container,
-  ContentsBase,
-  Breadcrumbs,
-  PageTitle,
-  Paragraph,
-  Button,
-  FileUploader,
-  FileTypes,
-  Stepper,
-  SectionTitle,
-  JumpButton,
-  FormActions,
-  NumericTable,
-  Loading,
-  Digits,
-  MarginBase,
-} from '../src';
-
-export default {
-  title: 'examples/ImportWizard',
-  parameters: { docs: { page: ImportWizard } },
-};
-
-const requestMock = (wait = 700) => {
-  // eslint-disable-next-line compat/compat
-  return new Promise<void>((resolve) => setTimeout(() => resolve(), wait));
-};
-
-export const ImportWalkthrough = () => {
-  const [isRequesting, setIsRequesting] = React.useState(false);
-  const [currentStep, setCurrentStep] = React.useState(0);
-  const headRef = React.useRef<HTMLHeadingElement>(null);
-
-  // 実行中ステップに入ったときだけ、3秒で次のステップへ
-  React.useEffect(() => {
-    if (currentStep === 2) {
-      setTimeout(() => setCurrentStep(3), 3000);
-    }
-    // stepが変わったら見出しにフォーカス
-    headRef.current?.focus();
-  }, [currentStep]);
-
-  return (
-    <Container width="narrow">
-      <ContentsBase>
-        <Breadcrumbs
-          mb={1}
-          links={[
-            { title: 'ホーム', url: '/' },
-            { title: '申請一覧', url: '/path/' },
-            { title: 'インポート' },
-          ]}
-        />
-        <Stepper
-          currentStepIndex={currentStep}
-          steps={['ファイルの準備', '内容の確認', '実行', '完了']}
-          disabledStepIndex={[]}
-        />
-        {currentStep === 0 ? (
-          <UploadStep
-            isRequesting={isRequesting}
-            headRef={headRef}
-            onFileSelect={async () => {
-              setIsRequesting(true);
-              await requestMock();
-              setCurrentStep(currentStep + 1);
-              setIsRequesting(false);
-            }}
-          />
-        ) : currentStep === 1 ? (
-          <ConfirmStep
-            isRequesting={isRequesting}
-            headRef={headRef}
-            onBack={() => setCurrentStep(currentStep - 1)}
-            onConfirm={async () => {
-              setIsRequesting(true);
-              await requestMock(1000);
-              setCurrentStep(currentStep + 1);
-              setIsRequesting(false);
-            }}
-          />
-        ) : currentStep === 2 ? (
-          <ExecutionStep headRef={headRef} />
-        ) : (
-          <CompletedStep headRef={headRef} onRetry={() => setCurrentStep(0)} />
-        )}
-      </ContentsBase>
-    </Container>
-  );
-};
-
-export const UploadStep = ({
-  headRef = React.createRef<HTMLHeadingElement>(),
-  onFileSelect = () => {
-    return;
-  },
-  isRequesting = false,
-}: {
-  headRef: React.Ref<HTMLHeadingElement>;
-  onFileSelect: () => any;
-  isRequesting: boolean;
-}) => (
-  <>
-    <PageTitle textAlign="center" mb={1} ref={headRef}>
-      申請のインポート
-    </PageTitle>
-    <Paragraph mb={1} textAlign="center">
-      複数の申請を一括して追加することができます。
-      <br />
-      テンプレートのCSVファイルをMicrosoft
-      Excel等で編集して、アップロードしてください。
-    </Paragraph>
-    <Paragraph mb={2} textAlign="center">
-      <Button IconComponent={MdFileDownload}>
-        テンプレートCSVファイルのダウンロード
-      </Button>
-    </Paragraph>
-    <SectionTitle mb={1} textAlign="center">
-      ファイルをアップロードして次のステップへ
-    </SectionTitle>
-
-    {/* TODO: こういうの↓を提供してくれるコンポーネントほしいね */}
-    <MarginBase fitContent mr="auto" ml="auto">
-      <FileUploader
-        fileLabel="CSVファイル"
-        isUploading={isRequesting}
-        acceptFileTypes={[FileTypes.CSV]}
-        onFileSelect={onFileSelect}
-      />
-    </MarginBase>
-  </>
-);
-
-const ConfirmTable = () => (
-  <NumericTable
-    ml={-1.5}
-    mr={-1.5}
-    mb={1}
-    headers={[
-      { value: 'タイトル' },
-      { value: '申請者' },
-      { value: '日付' },
-      { value: '金額', alignRight: true },
-    ]}
-    rows={[
-      {
-        cells: [
-          { value: '打ち合わせ費用' },
-          { value: 'フリー太郎' },
-          { value: '2020-10-01' },
-          { value: Digits.formalize(10000), alignRight: true },
-        ],
-      },
-      {
-        cells: [
-          { value: '打ち合わせ費用' },
-          { value: 'フリー太郎' },
-          { value: '2020-10-01' },
-          { value: Digits.formalize(10000), alignRight: true },
-        ],
-      },
-      {
-        cells: [
-          { value: '打ち合わせ費用' },
-          { value: 'フリー太郎' },
-          { value: '2020-10-01' },
-          { value: Digits.formalize(10000), alignRight: true },
-        ],
-      },
-      {
-        cells: [
-          { value: '打ち合わせ費用' },
-          { value: 'フリー太郎' },
-          { value: '2020-10-01' },
-          { value: Digits.formalize(10000), alignRight: true },
-        ],
-      },
-      {
-        cells: [
-          { value: '打ち合わせ費用' },
-          { value: 'フリー太郎' },
-          { value: '2020-10-01' },
-          { value: Digits.formalize(10000), alignRight: true },
-        ],
-      },
-      {
-        cells: [
-          { value: '打ち合わせ費用' },
-          { value: 'フリー太郎' },
-          { value: '2020-10-01' },
-          { value: Digits.formalize(10000), alignRight: true },
-        ],
-      },
-      {
-        cells: [
-          { value: '打ち合わせ費用' },
-          { value: 'フリー太郎' },
-          { value: '2020-10-01' },
-          { value: Digits.formalize(10000), alignRight: true },
-        ],
-      },
-      {
-        cells: [
-          { value: '打ち合わせ費用' },
-          { value: 'フリー太郎' },
-          { value: '2020-10-01' },
-          { value: Digits.formalize(10000), alignRight: true },
-        ],
-      },
-      {
-        cells: [
-          { value: '打ち合わせ費用' },
-          { value: 'フリー太郎' },
-          { value: '2020-10-01' },
-          { value: Digits.formalize(10000), alignRight: true },
-        ],
-      },
-      {
-        cells: [
-          { value: '打ち合わせ費用' },
-          { value: 'フリー太郎' },
-          { value: '2020-10-01' },
-          { value: Digits.formalize(10000), alignRight: true },
-        ],
-      },
-    ]}
-  />
-);
-
-export const ConfirmStep = ({
-  headRef = React.createRef<HTMLHeadingElement>(),
-  isRequesting = false,
-  onBack = () => {
-    /* do nothing */
-  },
-  onConfirm = () => {
-    /* do nothing */
-  },
-}: {
-  headRef: React.Ref<HTMLHeadingElement>;
-  isRequesting: boolean;
-  onBack: () => void;
-  onConfirm: () => void;
-}) => (
-  <>
-    <Loading isLoading={isRequesting} coverAll />
-    <PageTitle textAlign="center" mb={1} ref={headRef}>
-      インポートする内容をご確認ください
-    </PageTitle>
-    <SectionTitle mb={1}>10件の申請をインポートしようとしています</SectionTitle>
-    <ConfirmTable />
-    <Paragraph textAlign="center" mb={1}>
-      この内容でよろしければ、実行してください
-    </Paragraph>
-    <MarginBase fitContent ml="auto" mr="auto">
-      <FormActions>
-        <Button
-          large
-          disabled={isRequesting}
-          onClick={onConfirm}
-          appearance="primary"
-        >
-          実行
-        </Button>
-        <Button large disabled={isRequesting} onClick={onBack}>
-          やり直す
-        </Button>
-      </FormActions>
-    </MarginBase>
-  </>
-);
-
-export const ExecutionStep = ({
-  headRef = React.createRef<HTMLHeadingElement>(),
-}: {
-  headRef: React.Ref<HTMLHeadingElement>;
-}) => (
-  <>
-    <PageTitle textAlign="center" mb={1} ref={headRef}>
-      申請のインポートを実行中です
-    </PageTitle>
-    <Paragraph mb={1} textAlign="center">
-      しばらくこのままお待ちください
-    </Paragraph>
-    {/* TODO: プログレスバーか何かほしいですね */}
-  </>
-);
-
-export const CompletedStep = ({
-  headRef = React.createRef<HTMLHeadingElement>(),
-  onRetry = () => {
-    /* do nothing */
-  },
-}: {
-  headRef: React.Ref<HTMLHeadingElement>;
-  onRetry: () => void;
-}) => (
-  <>
-    <PageTitle textAlign="center" mb={1} ref={headRef}>
-      申請のインポートが完了しました
-    </PageTitle>
-    <Paragraph mb={1} textAlign="center">
-      以下の内容でインポートしました
-    </Paragraph>
-    <ConfirmTable />
-    <MarginBase fitContent ml="auto" mr="auto" mb={1}>
-      <JumpButton large>一覧画面へ</JumpButton>
-    </MarginBase>
-    <MarginBase fitContent ml="auto" mr="auto">
-      <Button onClick={onRetry} appearance="tertiary">
-        再度インポートする
-      </Button>
-    </MarginBase>
-  </>
-);
-
-```
-
-### examples/Pages.stories.tsx
-```
-typescript
-import * as React from 'react';
-import { Container, ContentsBase, Footer, GlobalNavi, Header } from '../src';
-import {
-  MdHome,
-  MdInbox,
-  MdAssessment,
-  MdLibraryBooks,
-  MdCreditCard,
-  MdSettings
-} from 'react-icons/md';
-
-export default {
-  title: 'examples/Pages'
-};
-
-const Accounting = () => (
-  <svg
-    viewBox="0 0 132 32"
-    style={{
-      height: '3rem'
-    }}
-  >
-    <title>freee会計</title>
-    <path
-      d="M10.84048,4.82736 L12.76624,14.73392 C12.95888,15.72464 12.30608,16.69264 11.31536,16.88528 L4.11056,18.2856 C3.11984,18.47824 2.15184,17.82512 1.95952,16.8344 L0.03376,6.92816 C-0.15888,5.93744 0.49392,4.96944 1.48464,4.7768 L8.68944,3.37648 C9.67984,3.18384 10.64816,3.83696 10.84048,4.82736 Z M5.023744,15.771552 C4.927104,15.274272 4.445504,14.949472 3.948224,15.046112 C3.450624,15.142752 3.125824,15.624352 3.222784,16.121632 C3.319424,16.618912 3.801024,16.944032 4.298304,16.847072 C4.795584,16.750432 5.120384,16.268832 5.023744,15.771552 Z M8.175936,15.158912 C8.079296,14.661632 7.597696,14.336832 7.100096,14.433152 C6.602816,14.530112 6.278016,15.011712 6.374656,15.508992 C6.471296,16.006272 6.952896,16.331392 7.450176,16.234432 C7.947776,16.137792 8.272576,15.656192 8.175936,15.158912 Z M11.327968,14.54624 C11.231328,14.04864 10.749728,13.72384 10.252448,13.82048 C9.754848,13.91744 9.430048,14.39904 9.526688,14.89632 C9.623328,15.3936 10.104928,15.7184 10.602208,15.62176 C11.099808,15.52512 11.424608,15.04352 11.327968,14.54624 Z M4.498592,13.069856 C4.401952,12.572576 3.920352,12.247776 3.423072,12.344096 C2.925472,12.441056 2.600672,12.922656 2.697632,13.419936 C2.794272,13.917216 3.275872,14.242336 3.773152,14.145376 C4.270432,14.048736 4.595232,13.567136 4.498592,13.069856 Z M7.650624,12.457184 C7.553984,11.959584 7.072384,11.634784 6.575104,11.731424 C6.077504,11.828384 5.752704,12.309984 5.849664,12.807264 C5.946304,13.304544 6.427904,13.629344 6.925184,13.532704 C7.422464,13.436064 7.747264,12.954464 7.650624,12.457184 Z M10.802816,11.844384 C10.706176,11.347104 10.224576,11.022304 9.726976,11.118944 C9.229696,11.215584 8.904896,11.697184 9.001536,12.194464 C9.098176,12.691744 9.579776,13.016864 10.077056,12.919904 C10.574656,12.823584 10.899456,12.341984 10.802816,11.844384 Z M3.97344,10.368128 C3.8768,9.870528 3.3952,9.546048 2.89792,9.642368 C2.40032,9.739328 2.07552,10.220928 2.17248,10.718208 C2.26912,11.215488 2.75072,11.540608 3.248,11.443648 C3.74528,11.347008 4.07008,10.865408 3.97344,10.368128 Z M7.125472,9.755328 C7.028832,9.258048 6.547232,8.933248 6.049952,9.029888 C5.552352,9.126528 5.227552,9.608128 5.324512,10.105408 C5.421152,10.602688 5.902752,10.927808 6.400032,10.830848 C6.897312,10.734528 7.222112,10.252928 7.125472,9.755328 Z M10.277504,9.142656 C10.180864,8.645376 9.699264,8.320576 9.201984,8.417216 C8.704384,8.513856 8.379584,8.995456 8.476544,9.492736 C8.573184,9.990016 9.054784,10.315136 9.552064,10.218176 C10.049344,10.121536 10.374144,9.639936 10.277504,9.142656 Z M9.034121,4.71888114 L8.952032,4.727328 L1.747232,6.127648 C1.499552,6.175968 1.336352,6.417888 1.384672,6.665568 L1.384672,6.665568 L1.647072,8.016288 C1.695392,8.263968 1.937312,8.427488 2.184992,8.379168 L2.184992,8.379168 L9.389792,6.978848 C9.637472,6.930528 9.800672,6.688608 9.752352,6.440928 L9.752352,6.440928 L9.489952,5.089888 C9.441632,4.842208 9.199712,4.679008 8.952032,4.727328 Z"
-      fill="#73A5FF"
-    ></path>
-    <path
-      d="M5.023744,15.771552 C5.120384,16.268832 4.795584,16.750432 4.298304,16.847072 C3.801024,16.944032 3.319424,16.618912 3.222784,16.121632 C3.125824,15.624352 3.450624,15.142752 3.948224,15.046112 C4.445504,14.949472 4.927104,15.274272 5.023744,15.771552"
-      fill="#FFFFFF"
-    ></path>
-    <path
-      d="M8.175936,15.158912 C8.272576,15.656192 7.947776,16.137792 7.450176,16.234432 C6.952896,16.331392 6.471296,16.006272 6.374656,15.508992 C6.278016,15.011712 6.602816,14.530112 7.100096,14.433152 C7.597696,14.336832 8.079296,14.661632 8.175936,15.158912"
-      fill="#FFFFFF"
-    ></path>
-    <path
-      d="M11.327968,14.54624 C11.424608,15.04352 11.099808,15.52512 10.602208,15.62176 C10.104928,15.7184 9.623328,15.3936 9.526688,14.89632 C9.430048,14.39904 9.754848,13.91744 10.252448,13.82048 C10.749728,13.72384 11.231328,14.04864 11.327968,14.54624"
-      fill="#FFFFFF"
-    ></path>
-    <path
-      d="M4.498592,13.069856 C4.595232,13.567136 4.270432,14.048736 3.773152,14.145376 C3.275872,14.242336 2.794272,13.917216 2.697632,13.419936 C2.600672,12.922656 2.925472,12.441056 3.423072,12.344096 C3.920352,12.247776 4.401952,12.572576 4.498592,13.069856"
-      fill="#FFFFFF"
-    ></path>
-    <path
-      d="M3.97344,10.368128 C4.07008,10.865408 3.74528,11.347008 3.248,11.443648 C2.75072,11.540608 2.26912,11.215488 2.17248,10.718208 C2.07552,10.220928 2.40032,9.739328 2.89792,9.642368 C3.3952,9.546048 3.8768,9.870528 3.97344,10.368128"
-      fill="#FFFFFF"
-    ></path>
-    <path
-      d="M7.650624,12.457184 C7.747264,12.954464 7.422464,13.436064 6.925184,13.532704 C6.427904,13.629344 5.946304,13.304544 5.849664,12.807264 C5.752704,12.309984 6.077504,11.828384 6.575104,11.731424 C7.072384,11.634784 7.553984,11.959584 7.650624,12.457184"
-      fill="#FFFFFF"
-    ></path>
-    <path
-      d="M7.125472,9.755328 C7.222112,10.252928 6.897312,10.734528 6.400032,10.830848 C5.902752,10.927808 5.421152,10.602688 5.324512,10.105408 C5.227552,9.608128 5.552352,9.126528 6.049952,9.029888 C6.547232,8.933248 7.028832,9.258048 7.125472,9.755328"
-      fill="#FFFFFF"
-    ></path>
-    <path
-      d="M10.802816,11.844384 C10.899456,12.341984 10.574656,12.823584 10.077056,12.919904 C9.579776,13.016864 9.098176,12.691744 9.001536,12.194464 C8.904896,11.697184 9.229696,11.215584 9.726976,11.118944 C10.224576,11.022304 10.706176,11.347104 10.802816,11.844384"
-      fill="#FFFFFF"
-    ></path>
-    <path
-      d="M10.277504,9.142656 C10.374144,9.639936 10.049344,10.121536 9.552064,10.218176 C9.054784,10.315136 8.573184,9.990016 8.476544,9.492736 C8.379584,8.995456 8.704384,8.513856 9.201984,8.417216 C9.699264,8.320576 10.180864,8.645376 10.277504,9.142656"
-      fill="#FFFFFF"
-    ></path>
-    <path
-      d="M9.752352,6.440928 C9.800672,6.688608 9.637472,6.930528 9.389792,6.978848 L2.184992,8.379168 C1.937312,8.427488 1.695392,8.263968 1.647072,8.016288 L1.384672,6.665568 C1.336352,6.417888 1.499552,6.175968 1.747232,6.127648 L8.952032,4.727328 C9.199712,4.679008 9.441632,4.842208 9.489952,5.089888 L9.752352,6.440928 Z"
-      fill="#FFFFFF"
-    ></path>
-    <path
-      d="M34.921312,-6.4e-05 C33.515552,6.150336 29.351072,11.249856 23.798752,13.927296 C26.247392,14.427136 28.782112,14.689536 31.378272,14.689536 C33.716832,14.689536 35.258592,14.537216 37.633952,14.162496 C37.525792,14.484416 37.607712,14.676096 37.086752,14.858496 C35.739872,15.330176 34.689632,15.657216 33.351712,15.974336 C32.646112,16.141696 32.514912,16.260096 32.040992,16.650176 C31.821152,16.830656 31.529952,17.091776 31.318112,17.242816 L31.318112,17.242816 L36.103072,17.908736 C36.712992,17.993856 36.869152,18.116736 36.785952,18.531456 L36.785952,18.531456 L30.599712,18.531456 C29.403872,18.531456 29.165472,18.602496 28.217312,18.929536 C27.073952,19.324096 25.890272,19.549376 24.606432,19.557696 C27.654752,23.105856 28.998432,27.539776 28.698592,31.999936 L28.698592,31.999936 L17.027232,16.848256 C16.120672,15.671296 15.745952,15.402816 14.098912,15.041216 L14.098912,15.041216 L12.033952,14.588096 L13.118752,14.324416 C13.648992,14.195776 13.693152,14.103296 14.036192,13.771456 C14.925472,12.910336 16.165152,12.387136 17.476832,12.387136 C18.301152,12.387136 18.529632,12.615616 19.397472,11.947456 L19.397472,11.947456 Z M24.024064,15.569664 C21.246144,15.275904 19.130304,15.341184 17.483584,15.845504 C19.318144,17.564864 21.785024,18.617664 24.497664,18.617664 C26.983424,18.617664 29.262464,17.733824 31.038144,16.263104 C28.651584,16.257664 26.576064,15.839424 24.024064,15.569664 Z M16.99312,13.448928 C16.56816,13.448928 16.22352,13.793568 16.22352,14.218528 C16.22352,14.643488 16.56816,14.987808 16.99312,14.987808 C17.41808,14.987808 17.7624,14.643488 17.7624,14.218528 C17.7624,13.793568 17.41808,13.448928 16.99312,13.448928 Z"
-      fill="#2864F0"
-    ></path>
-    <path
-      d="M16.99312,14.987808 C16.56816,14.987808 16.22352,14.643488 16.22352,14.218528 C16.22352,13.793568 16.56816,13.448928 16.99312,13.448928 C17.41808,13.448928 17.7624,13.793568 17.7624,14.218528 C17.7624,14.643488 17.41808,14.987808 16.99312,14.987808"
-      fill="#FFFFFF"
-    ></path>
-    <path
-      d="M24.497664,18.617664 C21.785024,18.617664 19.318144,17.564864 17.483584,15.845504 C19.130304,15.341184 21.246144,15.275904 24.024064,15.569664 C26.576064,15.839424 28.651584,16.257664 31.038144,16.263104 C29.262464,17.733824 26.983424,18.617664 24.497664,18.617664"
-      fill="#FFFFFF"
-    ></path>
-    <path
-      d="M72.590784,12.743424 C72.994944,12.743424 73.422144,13.006784 73.422144,13.745664 C73.422144,15.128704 71.622784,15.838144 70.227584,16.147584 C70.227584,14.975104 71.457344,12.743424 72.590784,12.743424 L72.590784,12.743424 Z M81.754624,12.743424 C82.158464,12.743424 82.585344,13.006784 82.585344,13.745664 C82.585344,15.128704 80.786304,15.838144 79.391424,16.147584 C79.391424,14.975104 80.620864,12.743424 81.754624,12.743424 L81.754624,12.743424 Z M90.912064,12.743424 C91.315904,12.743424 91.743104,13.006784 91.743104,13.745664 C91.743104,15.128704 89.944064,15.838144 88.548864,16.147584 C88.548864,14.975104 89.778304,12.743424 90.912064,12.743424 L90.912064,12.743424 Z M95.825984,14.886464 C95.097664,17.548544 92.809344,19.434304 90.887104,19.434304 C88.837184,19.434304 88.497024,18.103104 88.497024,17.247744 C90.485184,16.870144 93.522624,16.035584 93.522624,13.681664 C93.522624,12.602304 92.851264,11.588864 91.014144,11.588864 C88.392384,11.588864 86.750464,13.918464 86.313664,15.855744 C85.397184,17.901504 83.501184,19.434304 81.729664,19.434304 C79.679424,19.434304 79.339584,18.103104 79.339584,17.247744 C81.328064,16.870144 84.365504,16.035584 84.365504,13.681664 C84.365504,12.602304 83.694144,11.588864 81.856384,11.588864 C79.236544,11.588864 77.595264,13.915584 77.156864,15.851904 L77.156544,15.843264 C76.242304,17.895744 74.341184,19.434304 72.565824,19.434304 C70.516224,19.434304 70.175744,18.103104 70.175744,17.247744 C72.164224,16.870144 75.201984,16.035584 75.201984,13.681664 C75.201984,12.602304 74.530624,11.588864 72.692864,11.588864 C69.765184,11.588864 68.054144,14.496384 67.885504,16.515584 C67.478464,16.577024 67.091584,16.611584 66.759104,16.611584 C65.376064,16.611584 65.544384,15.556864 65.761344,14.441344 C66.073344,12.837504 65.210304,11.588864 63.533184,11.588864 C61.614784,11.588864 60.197824,13.485824 59.409024,15.361984 L59.403904,15.361024 C59.849344,13.067904 59.464704,11.660864 56.705024,11.660864 C55.442304,11.660864 54.003584,12.056704 52.451904,12.665984 C52.454784,12.669184 53.013504,9.770624 53.013504,9.770624 C53.708864,6.194944 54.646144,5.441344 55.815104,5.441344 C56.740864,5.441344 57.356224,5.994624 58.105024,6.962624 L58.507584,4.883264 C57.586624,4.345024 56.698304,4.129664 55.763264,4.129664 C53.004544,4.129664 51.166784,6.135424 50.401344,10.073024 L49.679744,13.792704 C47.165184,14.790784 43.971264,15.826304 38.945344,16.055104 L38.712064,17.251904 C43.632704,17.060864 46.870784,16.129024 49.411264,15.167104 C49.411264,15.167104 48.039104,22.225984 48.039104,22.226304 C47.366464,25.685824 46.460864,26.558464 45.250624,26.558464 C44.124544,26.558464 43.448704,25.663104 42.960704,25.037504 C42.892864,25.386944 42.558144,27.116864 42.558144,27.116864 C43.174784,27.462464 44.017344,27.870464 45.360704,27.870464 C47.901184,27.870464 49.854144,26.025984 50.650624,21.927424 L52.182144,14.049344 C53.722944,13.414144 55.333184,12.905024 56.138304,12.905024 C57.436864,12.905024 57.675264,13.345664 57.337984,15.104704 L56.242624,20.715904 L58.670464,20.715904 L59.163584,18.211904 C59.537344,16.290304 60.859584,13.527744 62.559744,13.527744 C63.416064,13.527744 63.602304,14.180864 63.442304,15.003904 C63.026944,17.142144 64.294464,17.688064 65.788224,17.688064 C66.358464,17.688064 67.051264,17.680064 67.892544,17.559424 C67.983744,18.854784 69.024064,20.964544 71.877184,20.964544 C74.015424,20.964544 75.843264,19.599744 77.091264,17.846464 C77.304384,19.143424 78.389504,20.964544 81.040704,20.964544 C83.176384,20.964544 85.002304,19.602944 86.250624,17.852864 C86.465664,19.149504 87.551104,20.964544 90.198144,20.964544 C93.195264,20.964544 95.782144,18.327104 96.786304,15.089984 L95.825984,14.886464 Z"
-      fill="#2864F0"
-    ></path>
-    <path
-      d="M111.78704,12.77296 C110.55376,11.91568 109.45616,10.89296 108.65904,9.84048 C107.95216,10.99824 107.12496,11.93072 106.0872,12.77296 L111.78704,12.77296 Z M108.0424,16.81872 C107.57616,17.85616 107.09488,18.80368 106.58352,19.69104 C108.55376,19.55536 110.10256,19.43504 111.57648,19.25488 L111.4712,19.13456 C110.80944,18.45776 110.61392,18.2472 110.05776,17.73584 L111.3208,17.02896 C112.61424,18.15696 113.86224,19.46544 114.88528,20.7736 L113.53168,21.72112 L113.50128,21.676 C112.94512,20.90928 112.83984,20.7736 112.50896,20.3528 C109.62128,20.7736 106.28272,21.14992 103.27472,21.37552 L102.8088,19.90128 C103.51536,19.87152 104.41808,19.8264 104.92912,19.78096 C105.45552,18.86384 105.92176,17.90128 106.34288,16.81872 L102.70352,16.81872 L102.70352,15.4952 L114.88528,15.4952 L114.88528,16.81872 L108.0424,16.81872 Z M105.54576,13.19408 C104.68848,13.81072 103.756,14.35216 102.8088,14.78832 L101.9064,13.58512 C104.50832,12.5624 106.44816,10.87792 107.78672,8.532 L109.516,8.532 C110.92976,10.51696 112.99024,12.08112 115.66704,13.164 L114.73488,14.4424 C113.81744,14.036 112.91504,13.53968 112.10288,12.98352 L112.10288,14.0664 L105.54576,14.0664 L105.54576,13.19408 Z"
-      fill="#2864F0"
-    ></path>
-    <path
-      d="M126.977664,14.337024 L124.105024,14.337024 L124.105024,12.893184 L126.977664,12.893184 L126.977664,8.441664 L128.481344,8.441664 L128.481344,12.893184 L131.338944,12.893184 L131.338944,14.337024 L128.481344,14.337024 L128.481344,21.766464 L126.977664,21.766464 L126.977664,14.337024 Z M119.894144,19.901184 L122.375424,19.901184 L122.375424,17.841024 L119.894144,17.841024 L119.894144,19.901184 Z M118.811264,15.856064 L123.413184,15.856064 L123.413184,14.728064 L118.811264,14.728064 L118.811264,15.856064 Z M118.811264,13.900544 L123.413184,13.900544 L123.413184,12.772864 L118.811264,12.772864 L118.811264,13.900544 Z M118.811264,9.900544 L123.413184,9.900544 L123.413184,8.727424 L118.811264,8.727424 L118.811264,9.900544 Z M118.510464,16.713344 L123.759104,16.713344 L123.759104,21.631104 L122.375424,21.631104 L122.375424,21.074624 L119.894144,21.074624 L119.894144,21.766464 L118.510464,21.766464 L118.510464,16.713344 Z M117.954304,11.945984 L124.315584,11.945984 L124.315584,10.727744 L117.954304,10.727744 L117.954304,11.945984 Z"
-      fill="#2864F0"
-    ></path>
-  </svg>
-);
-
-export const PageLayout = () => {
-  return (
-    <>
-      <Header logo={<Accounting />} sectionDataList={[]} />
-      <GlobalNavi
-        mb={1}
-        links={[
-          {
-            title: 'ホーム',
-            url: '#',
-            IconComponent: MdHome
-          },
-          {
-            title: '取引',
-            url: '#',
-            IconComponent: MdInbox
-          },
-          {
-            title: 'レポート',
-            url: '#',
-            IconComponent: MdAssessment,
-            current: true
-          },
-          {
-            title: '決算',
-            url: '#',
-            IconComponent: MdLibraryBooks
-          },
-          {
-            title: '口座',
-            url: '#',
-            IconComponent: MdCreditCard
-          },
-          {
-            title: '設定',
-            url: '#',
-            IconComponent: MdSettings
-          }
-        ]}
-      />
-      <Container width="wide" mb={1}>
-        <ContentsBase>hoge</ContentsBase>
-      </Container>
-      <Footer width="wide" />
-    </>
-  );
-};
-
-```
-
 ### examples/ResponsiveLayout.mdx
 ```
 markdown
@@ -4427,213 +1396,6 @@ import { Story, Canvas } from '@storybook/addon-docs/blocks';
   <Story id="examples-responsivelayout--layout-sample" inline={false} height={800} />
 </Canvas>
 
-
-```
-
-### examples/ResponsiveLayout.stories.tsx
-```
-typescript
-import * as React from 'react';
-import ResponsiveLayout from './ResponsiveLayout.mdx';
-
-import {
-  Button,
-  ColumnBase,
-  Container,
-  ContentsBase,
-  DescriptionList,
-  FormActions,
-  FormControl,
-  FormControlGroup,
-  HeadlineArea,
-  SectionTitle,
-  SubSectionTitle,
-  TextField,
-  Paragraph,
-  NameField,
-  NegativeContentsBase,
-  MessageBlock,
-  FloatingMessageBlock,
-  VibesProvider,
-} from '../src';
-
-export default {
-  title: 'examples/ResponsiveLayout',
-  parameters: { docs: { page: ResponsiveLayout }, layout: 'fullscreen' },
-};
-
-export const LayoutSample = () => {
-  const [screenMessage, setScreenMessage] = React.useState('');
-  return (
-    <>
-      <VibesProvider fixedLayout={false}>
-        <Container>
-          <ContentsBase>
-            <HeadlineArea pageTitle="レスポンシブレイアウト">
-              Vibesでいい感じにデスクトップでもWebでも使える画面を使えるようにしたい
-            </HeadlineArea>
-            <Paragraph mb={1}>
-              <code>VibesContext</code>に
-              <code>value={'{{ responsive: true }}'}</code>
-              を渡すことで、中身がよしなにレスポンシブレイアウトになるような仕組みを作れないかと考えています
-            </Paragraph>
-            <MessageBlock
-              message="MessageBlockはpaddingが少し小さくなり、ボタンは段落ちした表示になります"
-              linkTitle="詳細"
-              linkUrl="#"
-              mb={1}
-            />
-            {screenMessage && (
-              <FloatingMessageBlock
-                message={screenMessage}
-                onClose={() => setScreenMessage('')}
-                mb={1}
-              />
-            )}
-
-            <NegativeContentsBase>
-              <ColumnBase mb={1}>
-                <Paragraph>
-                  一部のコンポーネントは、 <code>responsive</code> propを持ち、{' '}
-                  <code>
-                    &lt;VibesContext value={'{{ responsive: '}true{' }}'}&gt;
-                  </code>{' '}
-                  内に置いたときと同じ表示になるようにします
-                </Paragraph>
-              </ColumnBase>
-            </NegativeContentsBase>
-
-            <Button
-              onClick={() =>
-                setScreenMessage(
-                  'FloatingMessageBlockもMessageBlock同様の表示になります。中身同じだからね'
-                )
-              }
-            >
-              ボタン
-            </Button>
-          </ContentsBase>
-
-          <ContentsBase>
-            <SectionTitle mb={1}>フォームの表示</SectionTitle>
-            <Paragraph mb={1}>
-              テキストフィールドはlargeにしないと、iOSでズームされてしまうかも
-            </Paragraph>
-            <ColumnBase mb={1.5}>
-              <FormControlGroup>
-                <FormControl label="氏名" required mb={1} mr={1}>
-                  <NameField autoComplete="name" required />
-                </FormControl>
-              </FormControlGroup>
-
-              <SubSectionTitle>ご住所</SubSectionTitle>
-              <FormControlGroup>
-                {/* フィールドがひとつの場合はfieldIdを指定 */}
-                <FormControl
-                  label="郵便番号"
-                  fieldId="layout-sample__postal"
-                  required
-                  mb={1}
-                  mr={1}
-                >
-                  <TextField
-                    id="layout-sample__postal"
-                    width="small"
-                    autoComplete="postal-code"
-                  />
-                </FormControl>
-                {/* フィールドがひとつの場合はfieldIdを指定 */}
-                <FormControl
-                  label="都道府県"
-                  fieldId="layout-sample__pref"
-                  required
-                  mb={1}
-                  mr={1}
-                >
-                  {/* 都道府県のSelectBoxを作るのめんどくさい（許して） */}
-                  <TextField
-                    id="layout-sample__pref"
-                    width="medium"
-                    autoComplete="address-level1"
-                  />
-                </FormControl>
-                {/* フィールドがひとつの場合はfieldIdを指定 */}
-                <FormControl
-                  label="市区町村"
-                  fieldId="layout-sample__city"
-                  required
-                  mb={1}
-                  mr={1}
-                >
-                  {/* 都道府県のSelectBoxを作るのめんどくさい（許して） */}
-                  <TextField
-                    id="layout-sample__city"
-                    width="medium"
-                    autoComplete="address-level2"
-                  />
-                </FormControl>
-              </FormControlGroup>
-              <FormControlGroup>
-                {/* フィールドがひとつの場合はfieldIdを指定 */}
-                <FormControl
-                  label="町名・番地"
-                  fieldId="layout-sample__address-line-1"
-                  required
-                  mb={1}
-                  mr={1}
-                >
-                  <TextField
-                    id="layout-sample__address-line-1"
-                    width="large"
-                    autoComplete="street-address"
-                  />
-                </FormControl>
-              </FormControlGroup>
-              <FormControlGroup>
-                {/* フィールドがひとつの場合はfieldIdを指定 */}
-                <FormControl
-                  label="建物名・部屋番号"
-                  fieldId="layout-sample__address-line-2"
-                  mb={1}
-                  mr={1}
-                >
-                  <TextField
-                    id="layout-sample__address-line-2"
-                    width="large"
-                    autoComplete="street-address"
-                  />
-                </FormControl>
-              </FormControlGroup>
-            </ColumnBase>
-
-            <DescriptionList
-              mb={1}
-              listContents={[
-                {
-                  title: <label htmlFor="layout-sample__item-1">項目1</label>,
-                  value: <TextField id="layout-sample__item-1" />,
-                },
-                {
-                  title: <label htmlFor="layout-sample__item-2">項目2</label>,
-                  value: <TextField id="layout-sample__item-1" />,
-                },
-                {
-                  title: <label htmlFor="layout-sample__item-3">項目3</label>,
-                  value: <TextField id="layout-sample__item-1" />,
-                },
-              ]}
-            />
-
-            <FormActions responsive>
-              <Button appearance="primary">送信</Button>
-              <Button appearance="tertiary">スキップ</Button>
-            </FormActions>
-          </ContentsBase>
-        </Container>
-      </VibesProvider>
-    </>
-  );
-};
 
 ```
 
@@ -4652,51 +1414,6 @@ import { Story, Canvas } from '@storybook/addon-docs/blocks';
   <Story id="examples-throughcommonprops--sample" />
 </Canvas>
 
-
-```
-
-### examples/ThroughCommonProps.stories.tsx
-```
-typescript
-import * as React from 'react';
-import ThroughCommonProps from './ThroughCommonProps.mdx';
-import { Button, CommonProps, MarginBase, pickCommonProps } from '../src';
-
-export default {
-  title: 'examples/ThroughCommonProps',
-  parameters: { docs: { page: ThroughCommonProps } }
-};
-
-export const Sample = () => {
-  type InnerProps = CommonProps & { children?: React.ReactNode };
-
-  const InnerBlock: React.FC<InnerProps> = (props: InnerProps) => {
-    const commonProps = pickCommonProps(props);
-    const { children } = props;
-
-    return <MarginBase {...commonProps}>{children}</MarginBase>;
-  };
-
-  const InnerButton: React.FC<InnerProps> = (props: InnerProps) => {
-    const commonProps = pickCommonProps(props);
-    const { children } = props;
-
-    return (
-      <Button {...commonProps} appearance="primary">
-        {children}
-      </Button>
-    );
-  };
-
-  return (
-    <>
-      <InnerBlock mb={3}>margin bottom = 3</InnerBlock>
-      <InnerButton ml={1} data-test="through-common-props-example">
-        Button (ml=1, data-test=through-common-props-example)
-      </InnerButton>
-    </>
-  );
-};
 
 ```
 
@@ -4934,6 +1651,1411 @@ export * from './Color';
 export * from './Font';
 export * from './Size';
 export * from './ZIndex';
+
+```
+
+### src/utilities/AriaProps.ts
+```
+typescript
+/*
+  roleごとに使用できるaria属性を定義しておくことで、WAI-ARIAを扱う上で便利にしたいものの、量が多くてしんどそう。
+  普段使わないものまでここに定義していくのはしんどいので、よく使うもの/必要になったものを定義していっています。
+ */
+
+type AriaExpandedT = boolean;
+type AriaPressedT = boolean | 'mixed';
+type AriaControlsT = string;
+type AriaOwnsT = string;
+type AriaHaspopupT = boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
+type AriaDescribedbyT = string;
+type AriaActivedescendantT = string;
+type AriaAutocompleteT = 'inline' | 'list' | 'both' | 'none';
+type AriaAtomicT = boolean;
+type AriaNumberValueT = number;
+type AriaLevelT = number;
+type AriaSetSizeT = number;
+type AriaPosinsetT = number;
+
+export type ButtonAriaProps = {
+  'aria-expanded'?: AriaExpandedT;
+  'aria-pressed'?: AriaPressedT;
+  'aria-controls'?: AriaControlsT;
+  'aria-owns'?: AriaOwnsT;
+  'aria-haspopup'?: AriaHaspopupT;
+  'aria-describedby'?: AriaDescribedbyT;
+  'aria-atomic'?: AriaAtomicT;
+};
+
+export type LinkAriaProps = {
+  'aria-expanded'?: AriaExpandedT;
+  'aria-controls'?: AriaControlsT;
+  'aria-owns'?: AriaOwnsT;
+  'aria-haspopup'?: AriaHaspopupT;
+  'aria-describedby'?: AriaDescribedbyT;
+  'aria-atomic'?: AriaAtomicT;
+};
+
+export type TextBoxAriaProps = {
+  'aria-expanded'?: AriaExpandedT;
+  'aria-activedescendant'?: AriaActivedescendantT;
+  'aria-controls'?: AriaControlsT;
+  'aria-owns'?: AriaOwnsT;
+  'aria-haspopup'?: AriaHaspopupT;
+  'aria-describedby'?: AriaDescribedbyT;
+  'aria-autocomplete'?: AriaAutocompleteT;
+  'aria-atomic'?: AriaAtomicT;
+};
+
+export type NumberInputAriaProps = {
+  'aria-valuemin'?: AriaNumberValueT;
+  'aria-valuemax'?: AriaNumberValueT;
+  'aria-valuenow'?: AriaNumberValueT;
+};
+
+export type TableRowAriaProps = {
+  'aria-level'?: AriaLevelT;
+  'aria-setsize'?: AriaSetSizeT;
+  'aria-posinset'?: AriaPosinsetT;
+  'aria-expanded'?: AriaExpandedT;
+};
+
+export function filterButtonAriaProps(props: ButtonAriaProps): ButtonAriaProps {
+  return {
+    'aria-expanded': props['aria-expanded'],
+    'aria-pressed': props['aria-pressed'],
+    'aria-controls': props['aria-controls'],
+    'aria-owns': props['aria-owns'],
+    'aria-haspopup': props['aria-haspopup'],
+    'aria-describedby': props['aria-describedby'],
+    'aria-atomic': props['aria-atomic'],
+  };
+}
+
+export function filterLinkAriaProps(props: LinkAriaProps): LinkAriaProps {
+  return {
+    'aria-expanded': props['aria-expanded'],
+    'aria-controls': props['aria-controls'],
+    'aria-owns': props['aria-owns'],
+    'aria-haspopup': props['aria-haspopup'],
+    'aria-describedby': props['aria-describedby'],
+    'aria-atomic': props['aria-atomic'],
+  };
+}
+
+export function filterTextBoxAriaProps(
+  props: TextBoxAriaProps
+): TextBoxAriaProps {
+  return {
+    'aria-expanded': props['aria-expanded'],
+    'aria-activedescendant': props['aria-activedescendant'],
+    'aria-controls': props['aria-controls'],
+    'aria-owns': props['aria-owns'],
+    'aria-haspopup': props['aria-haspopup'],
+    'aria-describedby': props['aria-describedby'],
+    'aria-autocomplete': props['aria-autocomplete'],
+    'aria-atomic': props['aria-atomic'],
+  };
+}
+
+export function filterNumberInputAriaProps(
+  props: NumberInputAriaProps
+): NumberInputAriaProps {
+  return {
+    'aria-valuemin': props['aria-valuemin'],
+    'aria-valuemax': props['aria-valuemax'],
+    'aria-valuenow': props['aria-valuenow'],
+  };
+}
+
+export function filterTableRowAriaProps(
+  props: TableRowAriaProps
+): TableRowAriaProps {
+  return {
+    'aria-expanded': props['aria-expanded'],
+    'aria-setsize': props['aria-setsize'],
+    'aria-posinset': props['aria-posinset'],
+    'aria-level': props['aria-level'],
+  };
+}
+
+```
+
+### src/utilities/Ascii.ts
+```
+typescript
+const hankakuToZenkaku = (str: string): string => {
+  // 全角スペースは離れてるので先にやる
+  return str.replace(/\u0020/g, '\u3000').replace(
+    // 半角「!」(0021) から半角チルダ(007E)
+    /[\u0021-\u007E]/g,
+    (s) => String.fromCharCode(s.charCodeAt(0) + 0xfee0)
+  );
+};
+
+const zenkakuToHankaku = (str: string): string => {
+  // 全角スペースは離れてるので先にやる
+  return str.replace(/\u3000/g, '\u0020').replace(
+    // 全角「！」(FF01)から全角チルダ(FF5E)
+    /[\uFF01-\uFF5E]/g,
+    (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0)
+  );
+};
+
+export const Ascii = { hankakuToZenkaku, zenkakuToHankaku };
+
+```
+
+### src/utilities/DOMUtil.ts
+```
+typescript
+export const scrollableParent = (
+  el: HTMLElement | null
+): HTMLElement | null => {
+  if (
+    !el ||
+    el === window.document.documentElement ||
+    el === window.document.body
+  ) {
+    return null;
+  }
+  const styles = window.getComputedStyle(el);
+  if (
+    ['auto', 'scroll'].indexOf(styles.overflowY) >= 0 ||
+    ['auto', 'scroll'].indexOf(styles.overflowX) >= 0
+  ) {
+    return el;
+  } else if (styles.position === 'fixed' || styles.position === 'sticky') {
+    return window.document.body;
+  }
+  return scrollableParent(el.parentElement);
+};
+
+```
+
+### src/utilities/Dialog.tsx
+```
+typescript
+import * as React from 'react';
+import Modal from 'react-modal';
+import useUniqueId from '../hooks/useUniqueId';
+import { usePortalParentContext } from '../utilities/VibesProvider';
+
+const overlayStyle: React.CSSProperties = {
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  display: 'flex',
+};
+const contentStyle: React.CSSProperties = {
+  alignSelf: 'center',
+  position: 'static',
+  background: 'transparent',
+  borderRadius: 0,
+  border: 0,
+  top: 'auto',
+  left: 'auto',
+  right: 'auto',
+  bottom: 'auto',
+  padding: 0,
+  margin: 'auto',
+};
+
+type DialogProps = {
+  /**
+   * ダイアログのid属性を指定します。
+   * 指定しない場合は、重複しないように生成された文字列が使用されます。
+   */
+  id?: string;
+  /**
+   * アラートダイアログ（他のダイアログの上に表示されるダイアログ）の場合はtrueにしてください
+   */
+  alertDialog: boolean;
+  render: (props: {
+    /**
+     * モーダルの固有のidが指定されます
+     */
+    id: string;
+    /**
+     * モーダルのタイトルを表示する要素のidが指定されます
+     * aria-labelledbyに使用されるため、必ずタイトルを表示する要素にidとして渡してください
+     */
+    titleId: string;
+  }) => React.ReactNode;
+  /**
+   * ダイアログの開閉状態を指定します
+   */
+  isOpen: boolean;
+  /**
+   * Close ボタンの click ハンドラを設定します。
+   */
+  onRequestClose: React.MouseEventHandler;
+  /**
+   * `true` のとき、ダイアログの外（オーバーレイ部分）のクリックまたは、Escキーの押下によりダイアログを閉じられるようにします。
+   * ユーザーの意図しないタイミングで閉じられることがない場合のみ、`true` にしてください。
+   */
+  shouldCloseOnOverlayClickOrEsc: boolean;
+  /**
+   * ダイアログを閉じたときにフォーカスする要素を指定します。
+   * 指定しない場合には、ダイアログが開く直前にフォーカスしていた要素にフォーカスします。
+   */
+  elementFocusAfterClose?: HTMLElement;
+  /**
+   * モーダルのaria-labelを指定できます。
+   * 指定しなかった場合はaria-labelledbyによってタイトルの文言が参照されます。
+   */
+  contentLabel?: string;
+  /**
+   * react-modal の contentRef に渡す値です。
+   */
+  contentRef?: React.ComponentProps<typeof Modal>['contentRef'];
+};
+
+export type DialogContentProps = {
+  /**
+   * ダイアログのid属性を指定します。
+   */
+  id?: string;
+  /**
+   * ダイアログの見出しのid属性を指定します
+   */
+  titleId?: string;
+} & Pick<DialogProps, 'onRequestClose'>;
+
+const Dialog = (props: DialogProps) => {
+  const {
+    id,
+    alertDialog,
+    render,
+    isOpen,
+    onRequestClose,
+    shouldCloseOnOverlayClickOrEsc,
+    elementFocusAfterClose,
+    contentRef,
+  } = props;
+  const uniqueId = useUniqueId('vb-Dialog', id);
+  const portalParent = usePortalParentContext();
+  const titleId = `${uniqueId}__title`;
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      onAfterClose={() => {
+        if (elementFocusAfterClose) {
+          elementFocusAfterClose.focus();
+        }
+      }}
+      style={{
+        overlay: {
+          ...overlayStyle,
+          // $vbMessageModalZIndex もしくは $vbModalZIndex
+          zIndex: alertDialog ? 1500 - 1 : 1000 - 1,
+        },
+        content: contentStyle,
+      }}
+      contentLabel={props.contentLabel}
+      ariaHideApp={false}
+      aria={{
+        labelledby: props.contentLabel ? undefined : titleId,
+      }}
+      shouldCloseOnOverlayClick={shouldCloseOnOverlayClickOrEsc}
+      shouldCloseOnEsc={shouldCloseOnOverlayClickOrEsc}
+      // 閉じたときにフォーカスする要素が指定されている場合は、react-modalのフォーカスを戻す機構を使用しない
+      shouldReturnFocusAfterClose={!elementFocusAfterClose}
+      id={`${uniqueId}__screen`}
+      bodyOpenClassName="vb-ReactModal__Body--open"
+      parentSelector={() => portalParent}
+      contentRef={contentRef}
+      closeTimeoutMS={300}
+    >
+      {render({ id: uniqueId, titleId })}
+    </Modal>
+  );
+};
+
+export default Dialog;
+
+```
+
+### src/utilities/Digits.ts
+```
+typescript
+/**
+ * 数値の3桁毎に `,` を挿入した文字列を返す。小数点以下は `,` を挿入しない
+ * @param str 数値または文字列化された数値
+ */
+const formalize = (str?: string | number): string => {
+  return str
+    ? String(str).replace(
+        /^(-?\d+)(\..*)?/,
+        (_matched, p1: string, p2?: string): string => {
+          return `${p1.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}${p2 || ''}`;
+        }
+      )
+    : '0';
+};
+
+/**
+ * 文字列を数値にする
+ * @param str 文字列化された数値
+ */
+const numberize = (str: string): number => {
+  return Number(str.replace(/[^0-9\-.]/g, ''));
+};
+
+/**
+ * 数値からパーセントに変換する
+ * @param val 数値または文字列化された数値
+ * @param toFixed 桁数(デフォルトは3)
+ */
+const toPercent = (val: string | number, toFixed = 3): string => {
+  return (Number(val) * 100).toFixed(toFixed);
+};
+
+export const Digits = { formalize, numberize, toPercent };
+
+```
+
+### src/utilities/FixedPortal.tsx
+```
+typescript
+
+```
+
+### src/utilities/FocusableEelements.ts
+```
+typescript
+export const getFocusableElements = (el: HTMLElement) =>
+  el.querySelectorAll(
+    'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), *[tabindex]:not([tabindex="-1"])'
+  );
+
+export const isFocusableElement = (el: Element): boolean => {
+  if (el.getAttribute('aria-hidden') === 'true') {
+    return false;
+  }
+  switch (el.tagName) {
+    case 'A':
+      return el.hasAttribute('href');
+    case 'BUTTON':
+    case 'INPUT':
+    case 'TEXTAREA':
+    case 'SELECT':
+      return !el.hasAttribute('disabled');
+    default:
+      return (
+        el.hasAttribute('tabindex') && el.getAttribute('tabindex') !== '-1'
+      );
+  }
+};
+
+```
+
+### src/utilities/Mins.ts
+```
+typescript
+import { TimeString } from './TimeString';
+
+const strToMin = (str: string): number => {
+  const min = TimeString.getMin(str);
+  const hour = TimeString.getHour(str);
+  return hour * 60 + min;
+};
+
+const minToStr = (min: number): string => {
+  return TimeString.createTimeString(0, min);
+};
+
+export const Mins = {
+  strToMin,
+  minToStr,
+};
+
+```
+
+### src/utilities/ScrollPortal.tsx
+```
+typescript
+import * as React from 'react';
+import { scrollableParent } from './DOMUtil';
+import ReactDOM from 'react-dom';
+import { usePortalParentContext } from '../utilities/VibesProvider';
+
+type Props = {
+  children: React.ReactNode;
+  isActive: boolean;
+  onOverflow?: () => void;
+  onScroll?: () => void;
+  portalTargetElement?: HTMLElement | undefined;
+  positionalBaseElement: HTMLElement | undefined;
+  verticalPosition?: 'top' | 'bottom';
+  horizontalPosition?: 'left' | 'center' | 'right';
+  popupRef?: React.RefObject<HTMLDivElement>;
+  'data-masking'?: boolean;
+};
+
+/**
+ * children をスクロールに追従する要素でラップして Portal 化する
+ */
+const ScrollPortal: React.FC<Props> = ({
+  children,
+  isActive,
+  onOverflow,
+  onScroll,
+  portalTargetElement,
+  positionalBaseElement,
+  verticalPosition = 'bottom',
+  horizontalPosition = 'left',
+  popupRef,
+  ...props
+}: Props) => {
+  const [listBoxLeft, setListBoxLeft] = React.useState<string>('0');
+  const [listBoxTop, setListBoxTop] = React.useState<string>('0');
+  const portalParent = usePortalParentContext();
+  // positionalBaseElementが画面から隠れていればonOverflowを呼ぶ
+  const checkScrollPosition = React.useCallback(() => {
+    if (!(onOverflow && positionalBaseElement)) {
+      return;
+    }
+    const scrollableElement = scrollableParent(positionalBaseElement);
+    if (scrollableElement) {
+      // positionalBaseElementの上端座標（scrollableElement相対）
+      // スクロール量によって変動
+      const topEdge =
+        positionalBaseElement.getBoundingClientRect().top -
+        scrollableElement.getBoundingClientRect().top;
+      // positionalBaseElementの下端座標（scrollableElement相対）
+      const bottomEdge =
+        topEdge + positionalBaseElement.getBoundingClientRect().height;
+      const leftEdge =
+        positionalBaseElement.getBoundingClientRect().left -
+        scrollableElement.getBoundingClientRect().left;
+      const rightEdge =
+        leftEdge + positionalBaseElement.getBoundingClientRect().width;
+      // スクロールコンテンツの上端/下端/左端/右端に到達
+      if (
+        bottomEdge < 0 ||
+        topEdge > scrollableElement.clientHeight ||
+        rightEdge < 0 ||
+        leftEdge > scrollableElement.clientWidth
+      ) {
+        onOverflow();
+        return;
+      }
+    }
+  }, [onOverflow, positionalBaseElement]);
+
+  // positionalBaseElement の下端または上端につく形で位置を調整する
+  const calculatePosition = React.useCallback(() => {
+    if (!positionalBaseElement) {
+      return;
+    }
+    const { left, top, bottom, height, width } =
+      positionalBaseElement.getBoundingClientRect();
+
+    setListBoxLeft(
+      `${
+        left +
+        (horizontalPosition === 'right'
+          ? width
+          : horizontalPosition === 'center'
+          ? width / 2
+          : 0) +
+        window.pageXOffset
+      }px`
+    );
+    if (!popupRef) {
+      setListBoxTop(
+        `${
+          top +
+          (verticalPosition === 'bottom' ? height : 0) +
+          window.pageYOffset
+        }px`
+      );
+    } else {
+      const popupHeight = popupRef.current?.getBoundingClientRect().height;
+      if (verticalPosition === 'bottom') {
+        setListBoxTop(`${top + height + window.pageYOffset}px`);
+      } else {
+        if (popupHeight) {
+          setListBoxTop(
+            `${bottom - popupHeight - height + window.pageYOffset}px`
+          );
+        }
+      }
+    }
+  }, [popupRef, horizontalPosition, positionalBaseElement, verticalPosition]);
+
+  // 要素がactiveになったら表示位置を再計算する
+  React.useLayoutEffect(() => {
+    if (!isActive) {
+      return;
+    }
+    calculatePosition();
+
+    // scroll可能なElement がある時はscrollに追従するようにする
+    const handleScroll = () => {
+      calculatePosition();
+      checkScrollPosition();
+      onScroll && onScroll();
+    };
+
+    if (positionalBaseElement) {
+      const target = scrollableParent(positionalBaseElement);
+
+      window.addEventListener('resize', handleScroll);
+      if (target) {
+        window.addEventListener('scroll', handleScroll);
+        target.addEventListener('scroll', handleScroll);
+      }
+      return () => {
+        window.removeEventListener('resize', handleScroll);
+        if (target) {
+          window.removeEventListener('scroll', handleScroll);
+          target.removeEventListener('scroll', handleScroll);
+        }
+      };
+    }
+  }, [
+    isActive,
+    onScroll,
+    calculatePosition,
+    checkScrollPosition,
+    positionalBaseElement,
+  ]);
+
+  return ReactDOM.createPortal(
+    <div
+      className="vb-scrollPortal"
+      style={{
+        position: 'absolute',
+        left: listBoxLeft,
+        top: listBoxTop,
+      }}
+      data-masking={props['data-masking']}
+    >
+      {children}
+    </div>,
+    portalTargetElement || portalParent
+  );
+};
+
+export default ScrollPortal;
+
+```
+
+### src/utilities/TimeString.ts
+```
+typescript
+import { differenceInMinutes } from 'date-fns';
+import { Ascii } from './Ascii';
+
+const createTimeString = (hour: number, min: number): string => {
+  // 分が60以上だったら時間を加算する
+  // ex) 01:70→ 02:10
+  if (min >= 60) {
+    hour = hour + Math.floor(min / 60);
+    min = min % 60;
+  } else if (min < 0) {
+    hour = hour + Math.floor(min / 60);
+    min = 60 + (min % 60);
+  }
+  // 10未満の時は2桁になるようにゼロ埋めして 12:34 形式に
+  return `${hour < 10 ? ('0' + hour).slice(-2) : hour}:${('0' + min).slice(
+    -2
+  )}`;
+};
+
+const getHour = (timeStr: string): number => {
+  if (timeStr) {
+    const matched =
+      timeStr.match(/^(\d+):/) ||
+      timeStr.match(/(\d+)\d{2}$/) ||
+      timeStr.match(/^(\d+)$/);
+    if (matched) {
+      return Number(matched[1]);
+    }
+  }
+  return 0;
+};
+
+const getMin = (timeStr: string): number => {
+  if (timeStr) {
+    const matched = timeStr.match(/:(\d+)$/) || timeStr.match(/^\d+(\d{2})$/);
+    if (matched) {
+      return Number(matched[1]);
+    }
+  }
+  return 0;
+};
+
+const convert = (str: string, minTime?: string, maxTime?: string): string => {
+  const replaced = Ascii.zenkakuToHankaku(str.replace(/[^:0-9]/g, ''));
+  const hour = getHour(replaced);
+  const min = getMin(replaced);
+
+  const timeString = createTimeString(hour, min);
+  const timeByDate = new Date(2000, 0, 1, hour, min);
+  const minTimeByDate = minTime
+    ? new Date(2000, 0, 1, getHour(minTime), getMin(minTime))
+    : undefined;
+  const maxTimeByDate = maxTime
+    ? new Date(2000, 0, 1, getHour(maxTime), getMin(maxTime))
+    : undefined;
+
+  const isSameOrAfterThanMinTime = minTimeByDate
+    ? differenceInMinutes(timeByDate, minTimeByDate) >= 0
+    : true;
+
+  if (minTime && !isSameOrAfterThanMinTime) {
+    return minTime;
+  }
+
+  const isSameOrBeforeThanMaxTime = maxTimeByDate
+    ? differenceInMinutes(maxTimeByDate, timeByDate) >= 0
+    : true;
+
+  if (maxTime && !isSameOrBeforeThanMaxTime) {
+    return maxTime;
+  }
+
+  return timeString;
+};
+
+export const TimeString = {
+  createTimeString,
+  getHour,
+  getMin,
+  convert,
+};
+
+```
+
+### src/utilities/VibesContext.ts
+```
+typescript
+import * as React from 'react';
+
+type VibesContextValue = {
+  /**
+   * trueにすると、一部のコンポーネントの表示が画面幅に応じて変化するようになります。
+   */
+  responsive: boolean;
+  /**
+   * ポップアップやダイアログ等のポータルを作成する際の親要素を指定します。
+   * 指定しない場合、document.bodyが親要素となります。
+   */
+  portalParent?: HTMLElement;
+  /**
+   * portalParentをrefで指定する場合に使用します。
+   */
+  portalParentRef?: React.RefObject<HTMLElement>;
+  /**
+   * 言語を指定します。
+   * 対応コンポーネントに埋め込まれたテキストが指定した言語で表示されます。
+   * デフォルトは 'ja' です。
+   */
+  lang?: 'ja' | 'en';
+};
+
+/**
+ * VibesContextを単体で利用することもできますが、できる限りVibesProviderを通して利用してください。
+ */
+export const VibesContext = React.createContext<VibesContextValue>({
+  responsive: false,
+  portalParent: document.body,
+  portalParentRef: undefined,
+  lang: 'ja',
+});
+
+```
+
+### src/utilities/VibesProvider.tsx
+```
+typescript
+import * as React from 'react';
+import { useMedia } from './useMedia';
+import { ThemeContext, ThemeProvider } from 'styled-components';
+import { VibesContext } from './VibesContext';
+import {
+  TabletBoundaryWidth,
+  MobileBoundaryWidth,
+  NarrowMobileBoundaryWidth,
+} from '../constants';
+
+export type MediaType = 'pc' | 'tablet' | 'mobile';
+
+const baseRemSize = 16;
+const deviceRemSize =
+  typeof document === 'undefined'
+    ? baseRemSize
+    : parseFloat(getComputedStyle(document.documentElement).fontSize);
+
+/**
+ * Vibes共通のコンテクストを提供するProviderコンポーネントです。
+ *
+ * Provider component which determine media type according to screen width.
+ *
+ * 320 ~ 767px mobile
+ * 768 ~ 1024px tablet
+ * 1025px ~ pc
+ *
+ * (when 1rem = 16px)
+ */
+export const VibesProvider = ({
+  children,
+  fixedLayout = false,
+  portalParent = document.body,
+  portalParentRef = undefined,
+  lang = 'ja',
+}: {
+  children: React.ReactNode;
+  /**
+   * レイアウトを固定するかどうかを設定します
+   * styled-componentsでは常にpcレイアウトとして扱われます。
+   * VibesContextValueのresponsiveの値は!fixedLayoutで計算されます
+   * （fixedLayoutがfalseの場合、一部のコンポーネントの表示が画面幅に応じて変化するようになります。）
+   */
+  fixedLayout?: boolean;
+  /**
+   * ポップアップやダイアログ等のポータルを作成する際の親要素を指定します。
+   * 指定しない場合、document.bodyが親要素となります。
+   */
+  portalParent?: HTMLElement;
+  /**
+   * portalParentをrefで指定する場合に使用します。
+   */
+  portalParentRef?: React.RefObject<HTMLElement>;
+  /**
+   * 言語を指定します。
+   * 対応コンポーネントに埋め込まれたテキストが指定した言語で表示されます。
+   * デフォルトは 'ja' です。
+   */
+  lang?: 'ja' | 'en';
+}) => {
+  const isTablet = useMedia(
+    `not (min-width: ${TabletBoundaryWidth})`,
+    window.innerWidth <
+      deviceRemSize * Number(TabletBoundaryWidth.replace('rem', ''))
+  );
+  const isMobile = useMedia(
+    `not (min-width: ${MobileBoundaryWidth})`,
+    window.innerWidth <
+      deviceRemSize * Number(MobileBoundaryWidth.replace('rem', ''))
+  );
+  // Narrower than iPhone8 (375px)
+  const isNarrowMobile = useMedia(
+    `not (min-width: ${NarrowMobileBoundaryWidth})`,
+    window.innerWidth <
+      deviceRemSize * Number(NarrowMobileBoundaryWidth.replace('rem', ''))
+  );
+
+  const media = {
+    mediaType: (fixedLayout
+      ? 'pc'
+      : isMobile
+      ? 'mobile'
+      : isTablet
+      ? 'tablet'
+      : 'pc') as MediaType,
+    isNarrowMobile,
+  };
+
+  return (
+    <ThemeProvider theme={media}>
+      <VibesContext.Provider
+        value={{
+          responsive: !fixedLayout,
+          portalParent,
+          portalParentRef,
+          lang,
+        }}
+      >
+        {children}
+      </VibesContext.Provider>
+    </ThemeProvider>
+  );
+};
+
+export const useVibes = () => React.useContext(ThemeContext);
+
+export const useResponsive = (responsiveProp?: boolean) => {
+  const contextValue = React.useContext(VibesContext);
+  return responsiveProp === undefined
+    ? contextValue.responsive
+    : responsiveProp;
+};
+
+export const usePortalParentContext = () => {
+  const { portalParent, portalParentRef } = React.useContext(VibesContext);
+  return portalParent || portalParentRef?.current || document.body;
+};
+
+export const useLang = () => {
+  const { lang } = React.useContext(VibesContext);
+  return lang || 'ja';
+};
+
+```
+
+### src/utilities/browsers.ts
+```
+typescript
+/**
+ * Returns true if using Microsoft Edge
+ * Microsoft Edgeを使用している場合にtrueを返す
+ */
+export const isEdge = () => !!navigator.userAgent.match(/Edg\//);
+
+```
+
+### src/utilities/commonProps.ts
+```
+typescript
+import {
+  pickFunctionalMarginProps,
+  FunctionalMarginProps,
+} from './functionalMarginClasses';
+import vbClassNames, { ModifierClassProps } from './vbClassNames';
+import { MarginClassProps } from './marginClasses';
+
+export type CommonDataProps = {
+  'data-guide'?: string;
+  'data-test'?: string;
+  'data-tracking'?: string;
+  'data-masking'?: boolean;
+};
+
+export type CommonProps = CommonDataProps & FunctionalMarginProps;
+
+export const pickCommonProps = (props: CommonProps): CommonProps => {
+  return {
+    ...pickCommonDataProps(props),
+    ...pickFunctionalMarginProps(props),
+  };
+};
+
+export const pickCommonDataProps = (props: CommonProps): CommonDataProps => ({
+  'data-guide': props['data-guide'],
+  'data-test': props['data-test'],
+  'data-tracking': props['data-tracking'],
+  'data-masking': props['data-masking'],
+});
+
+export default function commonProps(
+  props: CommonProps,
+  baseClassName: string,
+  classModifiers: ModifierClassProps = {},
+  deprecatedMarginClassProps: MarginClassProps = {}
+): CommonDataProps & { className: string } {
+  return {
+    'data-guide': props['data-guide'],
+    'data-test': props['data-test'],
+    'data-tracking': props['data-tracking'],
+    'data-masking': props['data-masking'],
+    className: vbClassNames(baseClassName, {
+      props,
+      modifier: classModifiers,
+      margin: deprecatedMarginClassProps,
+    }),
+  };
+}
+
+```
+
+### src/utilities/convertRemToPixel.ts
+```
+typescript
+export const convertRemToPixel = (rem: number) => {
+  const baseFontSize =
+    parseInt(
+      getComputedStyle(document.documentElement).fontSize.split('px')[0]
+    ) || 16;
+  return rem * baseFontSize;
+};
+
+```
+
+### src/utilities/date.ts
+```
+typescript
+import {
+  parse,
+  isValid,
+  isSameDay,
+  isAfter,
+  isBefore,
+  format,
+  getDay,
+} from 'date-fns';
+
+// パースに成功し妥当な値のとき Date を
+// そうでなければ null を返却する
+export function parseDate(date: Date | string | null | undefined): Date | null {
+  if (!date) {
+    return null;
+  }
+
+  const parsedDate = parse(date);
+  if (!isValid(parsedDate)) {
+    return null;
+  }
+
+  return parsedDate;
+}
+
+export function isValidDateInRange(
+  date: string | Date,
+  minDate?: string | Date,
+  maxDate?: string | Date
+): boolean {
+  if (!date) {
+    return false;
+  }
+  const parsedDate = parse(date);
+  const parsedMinDate = minDate && parse(minDate);
+  const parsedMaxDate = maxDate && parse(maxDate);
+  return (
+    isValid(parsedDate) &&
+    (parsedMinDate && isValid(parsedMinDate)
+      ? isSameDay(parsedDate, parsedMinDate) ||
+        isAfter(parsedDate, parsedMinDate)
+      : true) &&
+    (parsedMaxDate && isValid(parsedMaxDate)
+      ? isSameDay(parsedDate, parsedMaxDate) ||
+        isBefore(parsedDate, parsedMaxDate)
+      : true)
+  );
+}
+
+export function getValidDateNearestTarget(
+  target: Date | string,
+  minDate?: Date | string,
+  maxDate?: Date | string
+): Date | null {
+  const parsedTarget = parseDate(target);
+  const parsedMinDate = parseDate(minDate);
+  const parsedMaxDate = parseDate(maxDate);
+
+  if (
+    !parsedTarget ||
+    (parsedMinDate && parsedMaxDate && isAfter(parsedMinDate, parsedMaxDate))
+  ) {
+    return null;
+  }
+
+  if (isValidDateInRange(target, minDate, maxDate)) {
+    return parsedTarget;
+  }
+
+  const diffByMin = parsedMinDate
+    ? Math.abs(parsedMinDate.getTime() - parsedTarget.getTime())
+    : Number.MAX_VALUE;
+  const diffByMax = parsedMaxDate
+    ? Math.abs(parsedMaxDate.getTime() - parsedTarget.getTime())
+    : Number.MAX_VALUE;
+
+  if (diffByMin <= diffByMax) {
+    return parsedMinDate;
+  } else {
+    return parsedMaxDate;
+  }
+}
+
+export function formatDate(date: string | Date): string {
+  const parsedDate = parse(date);
+  return isValid(parsedDate) ? format(parsedDate, 'YYYY-MM-DD') : '';
+}
+
+export function formatDayOfWeek(date: string | Date): string {
+  const parsedDate = parse(date);
+  if (isValid(parsedDate)) {
+    switch (getDay(parsedDate)) {
+      case 0:
+        return '日曜日';
+      case 1:
+        return '月曜日';
+      case 2:
+        return '火曜日';
+      case 3:
+        return '水曜日';
+      case 4:
+        return '木曜日';
+      case 5:
+        return '金曜日';
+      case 6:
+        return '土曜日';
+    }
+  }
+  return '';
+}
+
+```
+
+### src/utilities/functionalMarginClasses.ts
+```
+typescript
+export type MarginSize =
+  | 0.25
+  | 0.5
+  | 1
+  | 1.5
+  | 2
+  | 3
+  | -0.25
+  | -0.5
+  | -1
+  | -1.5
+  | -2
+  | -3
+  | 'auto';
+
+export type FunctionalMarginProps = {
+  /**
+   * 全方向のマージン (rem)
+   */
+  ma?: MarginSize;
+  /**
+   * 上方向のマージン (rem)
+   */
+  mt?: MarginSize;
+  /**
+   * 下方向のマージン (rem)
+   */
+  mb?: MarginSize;
+  /**
+   * 左方向のマージン (rem)
+   */
+  ml?: MarginSize;
+  /**
+   * 右方向のマージン (rem)
+   */
+  mr?: MarginSize;
+};
+
+export const pickFunctionalMarginProps = ({
+  ma,
+  mt,
+  mb,
+  ml,
+  mr,
+}: FunctionalMarginProps): FunctionalMarginProps => {
+  return { ma, mt, mb, ml, mr };
+};
+
+const formatMarginSize = (ms: MarginSize): string =>
+  ms === 'auto' ? '-auto' : String(ms * 100);
+
+const functionalMarginClasses = ({
+  ma,
+  mt,
+  mb,
+  ml,
+  mr,
+}: FunctionalMarginProps): string => {
+  return [
+    ma ? `vb-ma${formatMarginSize(ma)}` : '',
+    mt ? `vb-mt${formatMarginSize(mt)}` : '',
+    mb ? `vb-mb${formatMarginSize(mb)}` : '',
+    mr ? `vb-mr${formatMarginSize(mr)}` : '',
+    ml ? `vb-ml${formatMarginSize(ml)}` : '',
+  ]
+    .filter((e) => e)
+    .join(' ');
+};
+
+export default functionalMarginClasses;
+
+```
+
+### src/utilities/index.ts
+```
+typescript
+// utilities ディレクトリの中身はVibes内部でしか使わないものとVibes外でも使いたいものの
+// 整理ができていないので、Vibes外でも使うことが想定されるものだけexportする方針とします
+
+export { Ascii } from './Ascii';
+export { pickCommonProps } from './commonProps';
+export type { CommonProps } from './commonProps';
+export { convertRemToPixel } from './convertRemToPixel';
+export { Digits } from './Digits';
+export { Mins } from './Mins';
+export { TimeString } from './TimeString';
+export { VibesContext } from './VibesContext';
+export { VibesProvider, useVibes } from './VibesProvider';
+export * from './FocusableEelements';
+export const VibesVersion = '100.1.0';
+
+```
+
+### src/utilities/keyboard.ts
+```
+typescript
+export const KeyCodes = {
+  BACKSPACE: 8,
+  TAB: 9,
+  ENTER: 13,
+  ESC: 27,
+  LEFT: 37,
+  UP: 38,
+  RIGHT: 39,
+  DOWN: 40,
+  H: 72,
+  J: 74,
+  K: 75,
+  L: 76,
+} as const;
+
+export const Keys = {
+  BACKSPACE: 'Backspace',
+  TAB: 'Tab',
+  ENTER: 'Enter',
+  ESC: 'Escape',
+  LEFT: 'ArrowLeft',
+  UP: 'ArrowUp',
+  RIGHT: 'ArrowRight',
+  DOWN: 'ArrowDown',
+  SPACE: ' ',
+} as const;
+
+```
+
+### src/utilities/marginClasses.ts
+```
+typescript
+import functionalMarginClasses, {
+  MarginSize as FunctionalMarginSize,
+} from './functionalMarginClasses';
+
+export type MarginClassProps = {
+  /**
+   * 上方向にマージンを付けるか否か（ `mt` propsが使用できる場合はそちらを使用してください）
+   */
+  marginTop?: boolean;
+  /**
+   * 左方向にマージンを付けるか否か（ `ml` propsが使用できる場合はそちらを使用してください）
+   */
+  marginLeft?: boolean;
+  /**
+   * 右方向にマージンを付けるか否か（ `mr` propsが使用できる場合はそちらを使用してください）
+   */
+  marginRight?: boolean;
+  /**
+   * 下方向にマージンを付けるか否か（ `mb` propsが使用できる場合はそちらを使用してください）
+   */
+  marginBottom?: boolean;
+  /**
+   * `marginTop`, `marginLeft`, `marginRight`, `marginBottom` によるマージンの大きさ。無指定であれば 1rem。
+   * `xSmall` = 0.25rem, `small` = 0.5rem, `large` = 1.5rem, `xLarge` = 2rem, `xxlarge` = 3rem
+   */
+  marginSize?: 'xSmall' | 'small' | 'large' | 'xLarge' | 'xxLarge';
+};
+
+type MarginSize = 'xSmall' | 'small' | 'large' | 'xLarge' | 'xxLarge';
+
+function marginSizeToRem(
+  marginSize: MarginSize | undefined
+): FunctionalMarginSize {
+  switch (marginSize) {
+    case 'xSmall':
+      return 0.25;
+    case 'small':
+      return 0.5;
+    case 'large':
+      return 1.5;
+    case 'xLarge':
+      return 2;
+    case 'xxLarge':
+      return 3;
+  }
+  return 1;
+}
+
+export const pickMarginClassProps = ({
+  marginTop,
+  marginLeft,
+  marginRight,
+  marginBottom,
+  marginSize,
+}: MarginClassProps): MarginClassProps => ({
+  marginTop,
+  marginLeft,
+  marginRight,
+  marginBottom,
+  marginSize,
+});
+
+export const marginClassPropsToFunctionalMarginProps = ({
+  marginTop,
+  marginLeft,
+  marginRight,
+  marginBottom,
+  marginSize,
+}: MarginClassProps) => {
+  const remSize = marginSizeToRem(marginSize);
+  return {
+    mt: marginTop ? remSize : undefined,
+    mb: marginBottom ? remSize : undefined,
+    ml: marginLeft ? remSize : undefined,
+    mr: marginRight ? remSize : undefined,
+  };
+};
+
+export default function marginClasses(props: MarginClassProps): Array<string> {
+  return functionalMarginClasses(
+    marginClassPropsToFunctionalMarginProps(props)
+  ).split(' ');
+}
+
+```
+
+### src/utilities/selfWindowNavigator.ts
+```
+typescript
+const isModifiedEvent = (event: React.MouseEvent | MouseEvent): boolean => {
+  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
+};
+
+export type SelfWindowNavigationProp = {
+  /**
+   * react-router等で、画面遷移時にデフォルトとは違う挙動をさせたいときに使用します。
+   * Ctrlキー等を押しながらのクリックや、コンテキストメニューから新しいタブを開いた場合などには発火しません。
+   */
+  onSelfWindowNavigation?: (url?: string) => void;
+};
+
+/**
+ * A要素でCtrl + Clickを有効にしつつ（＝別タブで開く挙動を残しつつ）、react-routerでハンドリングできるようにする。
+ * （実際のハンドリングはコンポーネント呼び出し側が行う。Vibesはあくまでその口を用意するスタンス）
+ * 通常のリンク等の onClick とは違う挙動となるため、onClickとは別名のインタフェースとして用意することを推奨します
+ * 実装はreact-routerのものを参考にしています https://github.com/ReactTraining/react-router/blob/c0b8ce42d3c6b85e3a53d1c56ae12c88205d00d8/packages/react-router-dom/modules/Link.js#L35-L52
+ * */
+const selfWindowNavigator = (navigate?: (url?: string) => void) => {
+  if (navigate) {
+    return (event: React.MouseEvent | MouseEvent, url?: string) => {
+      if (
+        event.defaultPrevented || // 既にdefault以外の挙動になっているものは無視
+        event.button !== 0 || // 左ボタンクリック以外は無視
+        isModifiedEvent(event) // Ctrlキーなどを押している場合は無視
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      navigate(url);
+    };
+  }
+};
+
+export default selfWindowNavigator;
+
+```
+
+### src/utilities/useMedia.ts
+```
+typescript
+import { useState, useEffect } from 'react';
+
+/**
+ * ウインドウ幅に応じてメディアクエリの状態を変更するカスタムフック
+ * ref: https://github.com/streamich/use-media/blob/master/src/useMedia.ts
+ * query: window.matchMedia() に渡すメディアクエリ文字列
+ * defaultState: 初期値
+ */
+export const useMedia = (query: string, defaultState?: boolean) => {
+  const [currentState, setCurrentState] = useState(defaultState);
+
+  useEffect(() => {
+    let mounted = true;
+    const mql = window.matchMedia(query);
+    const onChange = () => {
+      if (!mounted) {
+        return;
+      }
+      setCurrentState(!!mql.matches);
+    };
+    mql.addEventListener('change', onChange);
+    setCurrentState(mql.matches);
+
+    return () => {
+      mounted = false;
+      mql.removeEventListener('change', onChange);
+    };
+  }, [query]);
+
+  return currentState;
+};
+
+```
+
+### src/utilities/vbClassNames.ts
+```
+typescript
+import classNames from 'classnames';
+import marginClasses, { MarginClassProps } from './marginClasses';
+import functionalMarginClasses, {
+  FunctionalMarginProps,
+} from './functionalMarginClasses';
+
+export type ModifierClassProps = {
+  [key: string]: boolean | null | undefined;
+};
+
+/**
+ * { propName: 'property-value' }形式のpropsを { propNamePropertyValue: true } 形式にする
+ */
+export const convertClassModifiers = (props: {
+  [key: string]: string | undefined;
+}): { [key: string]: boolean } =>
+  Object.fromEntries(
+    Object.entries(props)
+      .map(([key, value]) =>
+        'string' === typeof value
+          ? [
+              `${key}${value
+                .split(/[-]/)
+                .reduce(
+                  (prev, curr) =>
+                    `${prev}${curr[0].toUpperCase()}${curr.slice(1)}`,
+                  ''
+                )}`,
+              true,
+            ]
+          : []
+      )
+      .filter((e) => e.length > 0)
+  );
+
+const modifierClasses = (
+  baseClassName: string,
+  modifierClassProps: ModifierClassProps
+): string[] =>
+  classNames(modifierClassProps)
+    .split(' ')
+    .map((modifierName) =>
+      modifierName ? `${baseClassName}--${modifierName}` : ''
+    );
+
+const vbClassNames = (
+  baseClassName: string,
+  {
+    modifier,
+    margin,
+    props,
+  }: {
+    modifier?: ModifierClassProps;
+    margin?: MarginClassProps;
+    props?: FunctionalMarginProps; // 今後、共通でクラスを付けたいやつがきたらここに & で増やすやつ
+  }
+): string =>
+  [
+    baseClassName,
+    ...(modifier ? modifierClasses(baseClassName, modifier) : []),
+    ...(margin ? marginClasses(margin) : []),
+    props ? functionalMarginClasses(props) : '',
+  ]
+    .filter((e) => e)
+    .join(' ');
+
+export default vbClassNames;
 
 ```
 
@@ -7042,442 +5164,6 @@ const MessageBlock: React.FC<Props> = (props: Props) => {
   );
 };
 export default MessageBlock;
-
-```
-
-### src/utilities/AriaProps.ts
-```
-typescript
-/*
-  roleごとに使用できるaria属性を定義しておくことで、WAI-ARIAを扱う上で便利にしたいものの、量が多くてしんどそう。
-  普段使わないものまでここに定義していくのはしんどいので、よく使うもの/必要になったものを定義していっています。
- */
-
-type AriaExpandedT = boolean;
-type AriaPressedT = boolean | 'mixed';
-type AriaControlsT = string;
-type AriaOwnsT = string;
-type AriaHaspopupT = boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
-type AriaDescribedbyT = string;
-type AriaActivedescendantT = string;
-type AriaAutocompleteT = 'inline' | 'list' | 'both' | 'none';
-type AriaAtomicT = boolean;
-type AriaNumberValueT = number;
-type AriaLevelT = number;
-type AriaSetSizeT = number;
-type AriaPosinsetT = number;
-
-export type ButtonAriaProps = {
-  'aria-expanded'?: AriaExpandedT;
-  'aria-pressed'?: AriaPressedT;
-  'aria-controls'?: AriaControlsT;
-  'aria-owns'?: AriaOwnsT;
-  'aria-haspopup'?: AriaHaspopupT;
-  'aria-describedby'?: AriaDescribedbyT;
-  'aria-atomic'?: AriaAtomicT;
-};
-
-export type LinkAriaProps = {
-  'aria-expanded'?: AriaExpandedT;
-  'aria-controls'?: AriaControlsT;
-  'aria-owns'?: AriaOwnsT;
-  'aria-haspopup'?: AriaHaspopupT;
-  'aria-describedby'?: AriaDescribedbyT;
-  'aria-atomic'?: AriaAtomicT;
-};
-
-export type TextBoxAriaProps = {
-  'aria-expanded'?: AriaExpandedT;
-  'aria-activedescendant'?: AriaActivedescendantT;
-  'aria-controls'?: AriaControlsT;
-  'aria-owns'?: AriaOwnsT;
-  'aria-haspopup'?: AriaHaspopupT;
-  'aria-describedby'?: AriaDescribedbyT;
-  'aria-autocomplete'?: AriaAutocompleteT;
-  'aria-atomic'?: AriaAtomicT;
-};
-
-export type NumberInputAriaProps = {
-  'aria-valuemin'?: AriaNumberValueT;
-  'aria-valuemax'?: AriaNumberValueT;
-  'aria-valuenow'?: AriaNumberValueT;
-};
-
-export type TableRowAriaProps = {
-  'aria-level'?: AriaLevelT;
-  'aria-setsize'?: AriaSetSizeT;
-  'aria-posinset'?: AriaPosinsetT;
-  'aria-expanded'?: AriaExpandedT;
-};
-
-export function filterButtonAriaProps(props: ButtonAriaProps): ButtonAriaProps {
-  return {
-    'aria-expanded': props['aria-expanded'],
-    'aria-pressed': props['aria-pressed'],
-    'aria-controls': props['aria-controls'],
-    'aria-owns': props['aria-owns'],
-    'aria-haspopup': props['aria-haspopup'],
-    'aria-describedby': props['aria-describedby'],
-    'aria-atomic': props['aria-atomic'],
-  };
-}
-
-export function filterLinkAriaProps(props: LinkAriaProps): LinkAriaProps {
-  return {
-    'aria-expanded': props['aria-expanded'],
-    'aria-controls': props['aria-controls'],
-    'aria-owns': props['aria-owns'],
-    'aria-haspopup': props['aria-haspopup'],
-    'aria-describedby': props['aria-describedby'],
-    'aria-atomic': props['aria-atomic'],
-  };
-}
-
-export function filterTextBoxAriaProps(
-  props: TextBoxAriaProps
-): TextBoxAriaProps {
-  return {
-    'aria-expanded': props['aria-expanded'],
-    'aria-activedescendant': props['aria-activedescendant'],
-    'aria-controls': props['aria-controls'],
-    'aria-owns': props['aria-owns'],
-    'aria-haspopup': props['aria-haspopup'],
-    'aria-describedby': props['aria-describedby'],
-    'aria-autocomplete': props['aria-autocomplete'],
-    'aria-atomic': props['aria-atomic'],
-  };
-}
-
-export function filterNumberInputAriaProps(
-  props: NumberInputAriaProps
-): NumberInputAriaProps {
-  return {
-    'aria-valuemin': props['aria-valuemin'],
-    'aria-valuemax': props['aria-valuemax'],
-    'aria-valuenow': props['aria-valuenow'],
-  };
-}
-
-export function filterTableRowAriaProps(
-  props: TableRowAriaProps
-): TableRowAriaProps {
-  return {
-    'aria-expanded': props['aria-expanded'],
-    'aria-setsize': props['aria-setsize'],
-    'aria-posinset': props['aria-posinset'],
-    'aria-level': props['aria-level'],
-  };
-}
-
-```
-
-### src/utilities/VibesContext.ts
-```
-typescript
-import * as React from 'react';
-
-type VibesContextValue = {
-  /**
-   * trueにすると、一部のコンポーネントの表示が画面幅に応じて変化するようになります。
-   */
-  responsive: boolean;
-  /**
-   * ポップアップやダイアログ等のポータルを作成する際の親要素を指定します。
-   * 指定しない場合、document.bodyが親要素となります。
-   */
-  portalParent?: HTMLElement;
-  /**
-   * portalParentをrefで指定する場合に使用します。
-   */
-  portalParentRef?: React.RefObject<HTMLElement>;
-  /**
-   * 言語を指定します。
-   * 対応コンポーネントに埋め込まれたテキストが指定した言語で表示されます。
-   * デフォルトは 'ja' です。
-   */
-  lang?: 'ja' | 'en';
-};
-
-/**
- * VibesContextを単体で利用することもできますが、できる限りVibesProviderを通して利用してください。
- */
-export const VibesContext = React.createContext<VibesContextValue>({
-  responsive: false,
-  portalParent: document.body,
-  portalParentRef: undefined,
-  lang: 'ja',
-});
-
-```
-
-### src/utilities/VibesProvider.tsx
-```
-typescript
-import * as React from 'react';
-import { useMedia } from './useMedia';
-import { ThemeContext, ThemeProvider } from 'styled-components';
-import { VibesContext } from './VibesContext';
-import {
-  TabletBoundaryWidth,
-  MobileBoundaryWidth,
-  NarrowMobileBoundaryWidth,
-} from '../constants';
-
-export type MediaType = 'pc' | 'tablet' | 'mobile';
-
-const baseRemSize = 16;
-const deviceRemSize =
-  typeof document === 'undefined'
-    ? baseRemSize
-    : parseFloat(getComputedStyle(document.documentElement).fontSize);
-
-/**
- * Vibes共通のコンテクストを提供するProviderコンポーネントです。
- *
- * Provider component which determine media type according to screen width.
- *
- * 320 ~ 767px mobile
- * 768 ~ 1024px tablet
- * 1025px ~ pc
- *
- * (when 1rem = 16px)
- */
-export const VibesProvider = ({
-  children,
-  fixedLayout = false,
-  portalParent = document.body,
-  portalParentRef = undefined,
-  lang = 'ja',
-}: {
-  children: React.ReactNode;
-  /**
-   * レイアウトを固定するかどうかを設定します
-   * styled-componentsでは常にpcレイアウトとして扱われます。
-   * VibesContextValueのresponsiveの値は!fixedLayoutで計算されます
-   * （fixedLayoutがfalseの場合、一部のコンポーネントの表示が画面幅に応じて変化するようになります。）
-   */
-  fixedLayout?: boolean;
-  /**
-   * ポップアップやダイアログ等のポータルを作成する際の親要素を指定します。
-   * 指定しない場合、document.bodyが親要素となります。
-   */
-  portalParent?: HTMLElement;
-  /**
-   * portalParentをrefで指定する場合に使用します。
-   */
-  portalParentRef?: React.RefObject<HTMLElement>;
-  /**
-   * 言語を指定します。
-   * 対応コンポーネントに埋め込まれたテキストが指定した言語で表示されます。
-   * デフォルトは 'ja' です。
-   */
-  lang?: 'ja' | 'en';
-}) => {
-  const isTablet = useMedia(
-    `not (min-width: ${TabletBoundaryWidth})`,
-    window.innerWidth <
-      deviceRemSize * Number(TabletBoundaryWidth.replace('rem', ''))
-  );
-  const isMobile = useMedia(
-    `not (min-width: ${MobileBoundaryWidth})`,
-    window.innerWidth <
-      deviceRemSize * Number(MobileBoundaryWidth.replace('rem', ''))
-  );
-  // Narrower than iPhone8 (375px)
-  const isNarrowMobile = useMedia(
-    `not (min-width: ${NarrowMobileBoundaryWidth})`,
-    window.innerWidth <
-      deviceRemSize * Number(NarrowMobileBoundaryWidth.replace('rem', ''))
-  );
-
-  const media = {
-    mediaType: (fixedLayout
-      ? 'pc'
-      : isMobile
-      ? 'mobile'
-      : isTablet
-      ? 'tablet'
-      : 'pc') as MediaType,
-    isNarrowMobile,
-  };
-
-  return (
-    <ThemeProvider theme={media}>
-      <VibesContext.Provider
-        value={{
-          responsive: !fixedLayout,
-          portalParent,
-          portalParentRef,
-          lang,
-        }}
-      >
-        {children}
-      </VibesContext.Provider>
-    </ThemeProvider>
-  );
-};
-
-export const useVibes = () => React.useContext(ThemeContext);
-
-export const useResponsive = (responsiveProp?: boolean) => {
-  const contextValue = React.useContext(VibesContext);
-  return responsiveProp === undefined
-    ? contextValue.responsive
-    : responsiveProp;
-};
-
-export const usePortalParentContext = () => {
-  const { portalParent, portalParentRef } = React.useContext(VibesContext);
-  return portalParent || portalParentRef?.current || document.body;
-};
-
-export const useLang = () => {
-  const { lang } = React.useContext(VibesContext);
-  return lang || 'ja';
-};
-
-```
-
-### src/utilities/commonProps.ts
-```
-typescript
-import {
-  pickFunctionalMarginProps,
-  FunctionalMarginProps,
-} from './functionalMarginClasses';
-import vbClassNames, { ModifierClassProps } from './vbClassNames';
-import { MarginClassProps } from './marginClasses';
-
-export type CommonDataProps = {
-  'data-guide'?: string;
-  'data-test'?: string;
-  'data-tracking'?: string;
-  'data-masking'?: boolean;
-};
-
-export type CommonProps = CommonDataProps & FunctionalMarginProps;
-
-export const pickCommonProps = (props: CommonProps): CommonProps => {
-  return {
-    ...pickCommonDataProps(props),
-    ...pickFunctionalMarginProps(props),
-  };
-};
-
-export const pickCommonDataProps = (props: CommonProps): CommonDataProps => ({
-  'data-guide': props['data-guide'],
-  'data-test': props['data-test'],
-  'data-tracking': props['data-tracking'],
-  'data-masking': props['data-masking'],
-});
-
-export default function commonProps(
-  props: CommonProps,
-  baseClassName: string,
-  classModifiers: ModifierClassProps = {},
-  deprecatedMarginClassProps: MarginClassProps = {}
-): CommonDataProps & { className: string } {
-  return {
-    'data-guide': props['data-guide'],
-    'data-test': props['data-test'],
-    'data-tracking': props['data-tracking'],
-    'data-masking': props['data-masking'],
-    className: vbClassNames(baseClassName, {
-      props,
-      modifier: classModifiers,
-      margin: deprecatedMarginClassProps,
-    }),
-  };
-}
-
-```
-
-### src/utilities/marginClasses.ts
-```
-typescript
-import functionalMarginClasses, {
-  MarginSize as FunctionalMarginSize,
-} from './functionalMarginClasses';
-
-export type MarginClassProps = {
-  /**
-   * 上方向にマージンを付けるか否か（ `mt` propsが使用できる場合はそちらを使用してください）
-   */
-  marginTop?: boolean;
-  /**
-   * 左方向にマージンを付けるか否か（ `ml` propsが使用できる場合はそちらを使用してください）
-   */
-  marginLeft?: boolean;
-  /**
-   * 右方向にマージンを付けるか否か（ `mr` propsが使用できる場合はそちらを使用してください）
-   */
-  marginRight?: boolean;
-  /**
-   * 下方向にマージンを付けるか否か（ `mb` propsが使用できる場合はそちらを使用してください）
-   */
-  marginBottom?: boolean;
-  /**
-   * `marginTop`, `marginLeft`, `marginRight`, `marginBottom` によるマージンの大きさ。無指定であれば 1rem。
-   * `xSmall` = 0.25rem, `small` = 0.5rem, `large` = 1.5rem, `xLarge` = 2rem, `xxlarge` = 3rem
-   */
-  marginSize?: 'xSmall' | 'small' | 'large' | 'xLarge' | 'xxLarge';
-};
-
-type MarginSize = 'xSmall' | 'small' | 'large' | 'xLarge' | 'xxLarge';
-
-function marginSizeToRem(
-  marginSize: MarginSize | undefined
-): FunctionalMarginSize {
-  switch (marginSize) {
-    case 'xSmall':
-      return 0.25;
-    case 'small':
-      return 0.5;
-    case 'large':
-      return 1.5;
-    case 'xLarge':
-      return 2;
-    case 'xxLarge':
-      return 3;
-  }
-  return 1;
-}
-
-export const pickMarginClassProps = ({
-  marginTop,
-  marginLeft,
-  marginRight,
-  marginBottom,
-  marginSize,
-}: MarginClassProps): MarginClassProps => ({
-  marginTop,
-  marginLeft,
-  marginRight,
-  marginBottom,
-  marginSize,
-});
-
-export const marginClassPropsToFunctionalMarginProps = ({
-  marginTop,
-  marginLeft,
-  marginRight,
-  marginBottom,
-  marginSize,
-}: MarginClassProps) => {
-  const remSize = marginSizeToRem(marginSize);
-  return {
-    mt: marginTop ? remSize : undefined,
-    mb: marginBottom ? remSize : undefined,
-    ml: marginLeft ? remSize : undefined,
-    mr: marginRight ? remSize : undefined,
-  };
-};
-
-export default function marginClasses(props: MarginClassProps): Array<string> {
-  return functionalMarginClasses(
-    marginClassPropsToFunctionalMarginProps(props)
-  ).split(' ');
-}
 
 ```
 

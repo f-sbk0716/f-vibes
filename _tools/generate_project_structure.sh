@@ -29,12 +29,9 @@ include_patterns=(
     # 定数定義 (全量)
     "src/constants/*.ts"
 
-    # 共通ユーティリティ
-    "src/utilities/AriaProps.ts"
-    "src/utilities/commonProps.ts"
-    "src/utilities/marginClasses.ts"
-    "src/utilities/VibesContext.ts"
-    "src/utilities/VibesProvider.tsx"
+    # ユーティリティ (全量)
+    "src/utilities/*.ts"
+    "src/utilities/*.tsx"
 
     # 共通スタイル
     "src/internal/CommonStyle.ts"
@@ -57,8 +54,12 @@ exclude_extensions=(
     ".json"
 )
 
-# stories.tsxファイルを除外するパターン（src配下のみ）
-exclude_stories_pattern="^\.\/src.*\.stories\.tsx$"
+# 除外するファイルパターン
+exclude_patterns=(
+    "\.stories\.tsx$"    # Storybookのストーリーファイル
+    "\.test\.ts$"        # テストファイル
+    "\.test\.tsx$"       # テストファイル
+)
 
 # 出力ファイルの設定
 output_file="$(dirname "$0")/project_structure.md"
@@ -93,8 +94,21 @@ for pattern in "${include_patterns[@]}"; do
     if [[ $pattern == *"*"* ]]; then
         # ワイルドカードを含むパターンの場合
         while IFS= read -r -d $'\0' file; do
-            # src配下の.stories.tsxファイルを除外
-            if ! echo "$file" | grep -q "$exclude_stories_pattern"; then
+            # 除外パターンのチェック
+            skip=false
+            for exclude in "${exclude_patterns[@]}"; do
+                if echo "$file" | grep -q "$exclude"; then
+                    skip=true
+                    break
+                fi
+            done
+            
+            # src配下のファイルの場合のみ.stories.tsxを除外
+            if [[ "$file" == ./src/* ]] && echo "$file" | grep -q "\.stories\.tsx$"; then
+                skip=true
+            fi
+
+            if [ "$skip" = false ]; then
                 files_to_process+=("$file")
             fi
         done < <(find . -path "./$pattern" -print0 2>/dev/null)
