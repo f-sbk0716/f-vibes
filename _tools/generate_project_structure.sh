@@ -1,32 +1,38 @@
 #!/bin/bash
 
-# 設定ファイルの読み込み
-config_file="$(dirname "$0")/config.txt"
-if [ ! -f "$config_file" ]; then
-    echo "設定ファイルが見つかりません: $config_file"
-    exit 1
-fi
-
 # 対象とするファイルパターンの配列を定義
 include_patterns=(
-    # コンポーネントの実装
-    "src/lv1/**/*.tsx"
-    "src/lv2/**/*.tsx"
+    # 基本的なボタン類
+    "src/lv1/buttons/Button.tsx"
+    "src/lv1/buttons/TextButton.tsx"
     
-    # コンポーネントのストーリー（使用例）
-    "src/lv1/**/*.stories.tsx"
-    "src/lv2/**/*.stories.tsx"
+    # フォーム関連
+    "src/lv1/forms/TextField.tsx"
+    "src/lv1/forms/SelectBox.tsx"
+    "src/lv1/forms/CheckBox.tsx"
+    "src/lv1/forms/RadioButton.tsx"
     
-    # デザインシステムの定数定義
-    "src/constants/*.ts"
+    # レイアウト関連
+    "src/lv1/layout/Stack.tsx"
+    "src/lv1/layout/HStack.tsx"
+    "src/lv1/layout/VStack.tsx"
     
-    # ドキュメント
+    # タイポグラフィ
+    "src/lv1/typography/Text.tsx"
+    "src/lv1/typography/Paragraph.tsx"
+    
+    # 複合コンポーネント
+    "src/lv2/formControl/FormControl.tsx"
+    "src/lv2/messageBlock/MessageBlock.tsx"
+    "src/lv2/dialogs/MessageDialog.tsx"
+
+    # ドキュメント (全量)
     "docs/*.stories.mdx"
     "docs/Design/**/*.stories.mdx"
     
-    # 実装例
-    "examples/*.stories.tsx"
+    # 実装例 (全量)
     "examples/*.mdx"
+    "examples/*.stories.tsx"
 )
 
 # 除外する拡張子の配列を定義
@@ -37,9 +43,6 @@ exclude_extensions=(
     ".gif"
     ".json"
 )
-
-# 除外パターンの読み込み
-IFS=$'\n' read -d '' -r -a exclude_patterns < "$config_file"
 
 # 出力ファイルの設定
 output_file="$(dirname "$0")/project_structure.md"
@@ -55,9 +58,17 @@ output_file="$(dirname "$0")/project_structure.md"
 # 対象ファイルの一覧を取得
 files_to_process=()
 for pattern in "${include_patterns[@]}"; do
-    while IFS= read -r -d $'\0' file; do
-        files_to_process+=("$file")
-    done < <(find . -path "./$pattern" -print0 2>/dev/null)
+    if [[ $pattern == *"*"* ]]; then
+        # ワイルドカードを含むパターンの場合
+        while IFS= read -r -d $'\0' file; do
+            files_to_process+=("$file")
+        done < <(find . -path "./$pattern" -print0 2>/dev/null)
+    else
+        # 具体的なファイルパスの場合
+        if [ -f "$pattern" ]; then
+            files_to_process+=("$pattern")
+        fi
+    fi
 done
 
 # ファイルの重複を削除してソート
